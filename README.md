@@ -6,5 +6,5 @@ Information and scripts to facilitate hacking the Harvard Q Guide.  For detailed
 * I have not posted the data from the scraping process at this time.  
 
 ## Awknowledgements
-* [Sara Valente](https://ssvalente.com) co-authored this work.  She was the brilliant one who thought to use the Web Scraper Chrome extension for this project, as I pitifully tried to get standard python scripts to penetrate two-factor authentication.  
-* Thanks to the team behind [Web Scraper](https://webscraper.io).  Could not have done this without you!
+* [Sara Valente](http://ssvalente.com) co-authored this work.  She was the brilliant one who thought to use the Web Scraper Chrome extension for this project, as I pitifully tried to get standard python scripts to penetrate two-factor authentication.  
+* Thanks to the team behind [Web Scraper](http://webscraper.io).  Could not have done this without you!
