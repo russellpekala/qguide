@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <h1>Analysis of the Q Guide</h1>
+    <h3>Comments frequency Plot Sortable by term/department. </h3>
+    <select onchange="cdf.wrangleData('department')" class="selectpicker" id="department-select">
+        <option value="MATH">Math</option>
+        <option value="HIST">History</option>
+    </select>
+    <select onchange="cdf.wrangleData('year')" class="selectpicker" id="first-year-select">
+        <option value="spring_2017">Spring 2017</option>
+        <option value="fall_2016">Fall 2016</option>
+    </select>
+
+    <div id="cdf"></div>
+    <div id="scatter"></div>
+
+    <h3>Course Workload and Comment Word Frequencies</h3>
+    <div id="histogram"></div>
+
+    <h3>Barchart for Course Ratings by Department</h3>
+    <select onchange="barchart.changeYear()" class="selectpicker" id="year-select">
+        <option value=2017>2017</option>
+        <option value=2016>2016</option>
+        <option value=2015>2015</option>
+    </select>
+    <select onchange="barchart.changeMetric()" class="selectpicker" id="metric-select">
+        <option value="workload">Workload</option>
+        <option value="overall">Overall Rating</option>
+    </select>
+    <select onchange="barchart.sort()" class="selectpicker" id="sort-select">
+        <option value="alphabetical">Alphabetical</option>
+        <option value="mean">Mean</option>
+        <option value="outstdev">Inter-Standard Deviation</option>
+        <option value="instdev">Intra-Standard Deviation</option>
+    </select>
+    <div id="barchart"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+
+    <script src="js/barchart.js"></script>
+    <script src="js/histogram.js"></script>
+    <script src="js/scatter.js"></script>
+    <script src="js/cdf.js"></script>
+
+    <script src="js/main.js"></script>
+</body>
