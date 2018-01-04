@@ -17,5 +17,5 @@ Information and scripts to facilitate hacking/analyzing of the Harvard Q Guide. 
 
 ## Awknowledgements
 * [Sara Valente](http://ssvalente.com) co-authored this work.  She thought to use the Web Scraper Chrome extension for this project.
-* Thanks to the team behind [Web Scraper](http://webscraper.io).  Without their tool, I don't know if it would have been possible to systematically scrape the Q Guide.
+* Thanks to the team behind [Web Scraper](http://webscraper.io).  Without their tool, I don't know if it would have been possible to navigate around Harvard Key's Two-Factor Authentication.
 * It's worth checking out previous Q Guide data projects by [Roger Zou](https://mystudentvoices.com/analyzing-the-harvard-q-guide-1ba02948819) and [Ryan Kerr](https://github.com/ryandkerr/q-guide).
