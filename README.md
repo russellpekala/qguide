@@ -13,7 +13,7 @@ Information and scripts to facilitate hacking/analyzing of the Harvard Q Guide. 
 
 ### Data-Visualizing
 * Interactive data visualizations can be found at this project's hosted [website](https://russellpekala.github.io/qguide/).  
-* Code for these visualizations is in the `js/` folder.  The `.json` and `.csv` files that the visualizations feed on files produced in `data_wrangling.ipynb` file.  
+* Code for these visualizations is in the `js/` folder.  The `.json` and `.csv` files that the visualizations feed on files are produced in the `data_wrangling.ipynb` file.  
 
 ## Awknowledgements
 * [Sara Valente](http://ssvalente.com) co-authored this work.  She thought to use the Web Scraper Chrome extension for this project.
