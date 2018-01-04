@@ -1,0 +1,5 @@
+{
+    "rigor": ["easy", "hard", "rigorous"],
+    "subject": ["math", "computer", "english", "history", "economics"],
+    "activity": ["read", "write", "listen", "watch", "code", "proof"]
+}
