@@ -1,3 +1,4 @@
 investigate.ipynb
-data/
+raw_data/
 .ipynb_checkpoints/
+.idea/
