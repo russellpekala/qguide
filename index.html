@@ -18,9 +18,9 @@
     </select>
 
     <div id="cdf"></div>
-    <div id="scatter"></div>
 
     <h3>Course Workload and Comment Word Frequencies</h3>
+    <div id="scatter"></div>
     <div id="histogram"></div>
 
     <h3>Barchart for Course Ratings by Department</h3>
@@ -40,6 +40,21 @@
         <option value="instdev">Intra-Standard Deviation</option>
     </select>
     <div id="barchart"></div>
+
+    <select onchange="enrollmentHistogram.updateKey()" class="selectpicker" id="enrollment-select">
+        <option value="MATH">Math</option>
+        <option value="HIST">History</option>
+    </select>
+    <div id="enrollment"></div>
+    <!--<div id="sort-methods">-->
+        <!--<p>Sort Methods: </p>-->
+        <!--<button class="button2 hvr-fade2" onClick="resort(final_departments, 'name')">Alphabetical</button>-->
+        <!--<button id="median" class="button2 hvr-fade2" onClick="resort(final_departments, 'median')">Median</button>-->
+        <!--<button class="button2 hvr-fade2" onClick="resort(final_departments, 'mean')">Mean</button>-->
+        <!--<button class="button2 hvr-fade2" onClick="resort(final_departments,'median_student')">Median Student</button>-->
+        <!--<button id="total_enrollment" class="button2 hvr-fade2" onClick="resort(final_departments,'total_enrollment')">Total Enrollment</button>-->
+    <!--</div>-->
+    <!--<div id="button1"></div>-->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>

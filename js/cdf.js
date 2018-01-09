@@ -1,9 +1,11 @@
+var parse = d3.format(".2s");
 
-Cdf = function(_parentElement, _data){
+Cdf = function(_parentElement, _data, _labels){
 
   this.parentElement = _parentElement;
   this.data = _data;
   this.displayData = [];
+  this.labels = _labels;
 
   this.initVis();
 }
@@ -11,7 +13,7 @@ Cdf = function(_parentElement, _data){
 Cdf.prototype.initVis = function(){
   var vis = this;
 
-  vis.margin = { top: 40, right: 10, bottom: 55, left: 0 };
+  vis.margin = { top: 40, right: 10, bottom: 75, left: 50 };
 
   vis.width = 900 - vis.margin.left - vis.margin.right;
   vis.height = 300 - vis.margin.top - vis.margin.bottom;
@@ -48,7 +50,6 @@ Cdf.prototype.wrangleData = function(analyzeBy){
 
   vis.displayData = [];
   vis.runningTotal = 0;
-  console.log(vis.data);
   vis.data[vis.analyzeBy][vis.specific].forEach(function(d){
     vis.displayData.push({
       label: d[0],
@@ -85,8 +86,9 @@ Cdf.prototype.updateVis = function(){
       return vis.y(d.freq);
     });
 
+  // Axes
   vis.svg.append("g")
-    .attr("class", "axis axis--x")
+    .attr("class", "x-axis")
     .attr("transform", "translate(0," + vis.height + ")")
     .call(d3.axisBottom(vis.x))
     .selectAll("text")
@@ -94,4 +96,29 @@ Cdf.prototype.updateVis = function(){
     .attr("x", 7)
     .attr("transform", "rotate(90)")
     .style("text-anchor", "start");
+
+  vis.svg.append("g")
+    .attr("class", "y-axis")
+    .call(d3.axisLeft(vis.y).tickFormat(parse));
+
+  // Labels
+  vis.svg.append('text')
+    .attr('class', 'title label')
+    .attr('text-anchor', 'middle')
+    .attr('transform', "translate("+ vis.width/2 +","+ (-20) +")")
+    .text(vis.labels.title);
+
+  vis.svg.append('text')
+    .attr('class', 'axis-label label')
+    .attr('text-anchor', 'middle')
+    .attr('transform', "translate("+ vis.width/2 +","+ (vis.height + 30) +")")
+    .text(vis.labels.x);
+
+  vis.svg.append('text')
+    .attr('class', 'axis-label label')
+    .attr('text-anchor', 'middle')
+    .attr('transform', "translate(-37, " + (vis.height / 2) + ")rotate(-90)")
+    .text(vis.labels.y);
+
+
 };

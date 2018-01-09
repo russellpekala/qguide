@@ -1,17 +1,18 @@
-Scatter = function(_parentElement, _data, _metric){
+Scatter = function(_parentElement, _data, _metric, _labels){
 
   this.parentElement = _parentElement;
   this.data = _data;
   this.metric = _metric;
   this.displayData = [];
+  this.labels = _labels;
 
   this.initVis();
-}
+};
 
 Scatter.prototype.initVis = function(){
   var vis = this;
 
-  vis.margin = { top: 40, right: 10, bottom: 25, left: 35 };
+  vis.margin = { top: 40, right: 10, bottom: 60, left: 70 };
 
   vis.width = 500 - vis.margin.left - vis.margin.right;
   vis.height = 300 - vis.margin.top - vis.margin.bottom;
@@ -38,7 +39,7 @@ Scatter.prototype.updateMetric = function(newMetric){
   vis.metric = newMetric;
 
   vis.wrangleData();
-}
+};
 
 Scatter.prototype.wrangleData = function(){
   var vis = this;
@@ -60,7 +61,7 @@ Scatter.prototype.updateVis = function(){
     rigor: 'red',
     activity: 'yellow',
     subject: 'blue'
-  }
+  };
 
   vis.dot = vis.svg.selectAll(".dot")
     .data(vis.displayData)
@@ -76,15 +77,36 @@ Scatter.prototype.updateVis = function(){
       console.log(d.word);
     })
     .on("click", function(d){
-      myhistogram.updateWord(d.word);
-    })
+      myhistogram.updateKey(d.word);
+    });
 
+  // Axes
   vis.svg.append("g")
     .attr("class", "axis axis--x")
     .attr("transform", "translate(0," + vis.height + ")")
     .call(d3.axisBottom(vis.x));
+
   vis.svg.append("g")
     .attr("class", "axis axis--y")
-    // .attr("transform", "translate(0," + vis.height + ")")
     .call(d3.axisLeft(vis.y));
+
+  // Labels
+  vis.svg.append('text')
+    .attr('class', 'title label')
+    .attr('text-anchor', 'middle')
+    .attr('transform', "translate("+ vis.width/2 +","+ (-20) +")")
+    .text(vis.labels.title);
+
+  vis.svg.append('text')
+    .attr('class', 'axis-label label')
+    .attr('text-anchor', 'middle')
+    .attr('transform', "translate("+ vis.width/2 +","+ (vis.height + 30) +")")
+    .text(vis.labels.x);
+
+  vis.svg.append('text')
+    .attr('class', 'axis-label label')
+    .attr('text-anchor', 'middle')
+    .attr('transform', "translate(-37, " + (vis.height / 2) + ")rotate(-90)")
+    .text(vis.labels.y);
+
 };

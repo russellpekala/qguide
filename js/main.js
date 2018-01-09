@@ -29,25 +29,50 @@ function makeScatterData(raw_data, categories){
 
 
 d3.json("data/cdf_data.json", function(data){
-  cdf = new Cdf('cdf', data, 'department', 'MATH');
+  var labels = {
+    "x": 'Word',
+    "y": 'Cumulative Frequency',
+    "title": 'Cumulative Distribution of Words'
+  };
+  cdf = new Cdf('cdf', data, labels);
 });
 
 d3.json("data/short_workload_list.json", function(data){
+  var labels = {
+    "x": 'Workload',
+    "y": 'Number of Occurances at that Workload',
+    "title": 'A Look at The Use of Words'
+  };
   d3.json("data/word_categories.json", function(wordCategories){
     var scatterData = makeScatterData(data, wordCategories);
-    myscatter = new Scatter('scatter', scatterData, 'workload');
-    myhistogram = new Histogram('histogram', data, 'easy');
+    var labelsScatter = {
+      "x": 'Frequency',
+      "y": 'Workload',
+      "title": 'A Look at The Use of Words--Scatter'
+    };
+    myscatter = new Scatter('scatter', scatterData, 'workload', labelsScatter);
+    myhistogram = new Histogram('histogram', data, 'easy', labels, 30, 15);
   })
 });
 
-
-d3.csv("data/statistics.csv", function(data){
-  data.forEach(function(d){
-    data.columns.forEach(function(col){
-      if(!isNaN(d[col])){
-        d[col] = +d[col];
-      }
+d3.json("constants/conventions.json", function(conventions){
+  d3.csv("data/statistics.csv", function(data){
+    data.forEach(function(d){
+      data.columns.forEach(function(col){
+        if(!isNaN(d[col])){
+          d[col] = +d[col];
+        }
+      });
     });
+    barchart = new Barchart('barchart', data, 2017, 'workload', ['workload', 'overall'], conventions);
   });
-  barchart = new Barchart('barchart', data, 2017, 'workload', ['workload', 'overall']);
+});
+
+d3.json("data/enrollment.json", function(data){
+  var labels = {
+    "x": 'Enrollment Size',
+    "y": 'Number of Classes',
+    "title": 'Enrollment Data'
+  };
+  enrollmentHistogram = new Histogram('enrollment', data, 'MATH', labels, 30, 150);
 });

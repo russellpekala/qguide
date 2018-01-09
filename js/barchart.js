@@ -1,10 +1,11 @@
-Barchart = function(_parentElement, _data, _year, _metric, _metrics){
+Barchart = function(_parentElement, _data, _year, _metric, _metrics, _conventions){
 
   this.parentElement = _parentElement;
   this.data = _data;
   this.year = _year;
   this.metric = _metric;
   this.metrics = _metrics;
+  this.conventions = _conventions;
   this.displayData = [];
 
   this.preprocess();
@@ -71,9 +72,6 @@ Barchart.prototype.sort = function(){
   var vis = this;
 
   var sorting = $('#sort-select').val();
-  console.log(sorting);
-  console.log(vis.metric);
-  console.log(vis.displayData);
   if(sorting === 'alphabetical'){
     vis.displayData.sort(function(a, b){
       if(a.department1 < b.department1){
@@ -149,12 +147,14 @@ Barchart.prototype.updateVis = function() {
   vis.barLegendText = vis.barLegend;
   vis.barLegendText = vis.barLegendText.enter().append("text")
     .merge(vis.barLegendText)
-    .attr("x", function(d, i){ return vis.legendTab[i] + 19; })
+    .attr("x", function(d, i){ return vis.legendTab[i] + 21; })
     .attr("y", -27)
     .attr("dy", ".35em")
     .style("text-anchor", "begin")
     .style("font" ,"10px sans-serif")
-    .text(function(d){ return d; });
+    .text(function(d, i){
+      return vis.conventions[vis.metric]["intervals"][i].label;
+    });
 
   d3.selectAll(".axis")
     .style("fill", "none")
