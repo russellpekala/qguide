@@ -41,6 +41,26 @@
     </select>
     <div id="barchart"></div>
 
+    <h2>What's with the High Workload Standard Deviation?</h2>
+    <select onchange="stdevList.wrangleData()" class="selectpicker" id="year-select2">
+        <option value=2017>2017</option>
+        <option value=2016>2016</option>
+        <option value=2015>2015</option>
+    </select>
+    <select onchange="stdevList.wrangleData()" class="selectpicker" id="term-select2">
+        <option value="spring">Spring</option>
+        <option value="fall">Fall</option>
+    </select>
+    <select onchange="stdevList.wrangleData()" class="selectpicker" id="metric-select2">
+        <option value="Workload">Workload</option>
+        <option value="Overall">Overall Rating</option>
+    </select>
+    <select onchange="stdevList.wrangleData()" class="selectpicker" id="department-select2">
+        <option value="MATH">Math</option>
+        <option value="HIST">History</option>
+    </select>
+    <div id="stdevlist"></div>
+
     <select onchange="enrollmentHistogram.updateKey()" class="selectpicker" id="enrollment-select">
         <option value="MATH">Math</option>
         <option value="HIST">History</option>
@@ -65,6 +85,7 @@
     <script src="js/histogram.js"></script>
     <script src="js/scatter.js"></script>
     <script src="js/cdf.js"></script>
+    <script src="js/stdevlist.js"></script>
 
     <script src="js/main.js"></script>
 </body>

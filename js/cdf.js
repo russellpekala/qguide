@@ -30,7 +30,7 @@ Cdf.prototype.initVis = function(){
     .rangeRound([0, vis.width]).padding(vis.padding);
 
   vis.y = d3.scaleLinear()
-    .range([0, vis.height]);
+    .range([vis.height, 0]);
 
   vis.wrangleData('department');
 };
@@ -79,11 +79,11 @@ Cdf.prototype.updateVis = function(){
       return vis.x(d.label);
     })
     .attr("y", function(d){
-      return vis.y(vis.runningTotal - d.freq);
+      return vis.y(d.freq);
     })
     .attr("width", vis.x.bandwidth())
     .attr("height", function(d) {
-      return vis.y(d.freq);
+      return vis.y(vis.runningTotal - d.freq);
     });
 
   // Axes

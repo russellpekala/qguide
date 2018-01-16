@@ -27,7 +27,6 @@ function makeScatterData(raw_data, categories){
   return result;
 }
 
-
 d3.json("data/cdf_data.json", function(data){
   var labels = {
     "x": 'Word',
@@ -75,4 +74,9 @@ d3.json("data/enrollment.json", function(data){
     "title": 'Enrollment Data'
   };
   enrollmentHistogram = new Histogram('enrollment', data, 'MATH', labels, 30, 150);
+});
+
+d3.csv("data/ranked.csv", function(data){
+  console.log(data);
+  stdevList = new StdevList('stdevlist', data, 'MATH', 2017, 'workload', [10, 100]);
 });

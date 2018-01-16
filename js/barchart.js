@@ -49,7 +49,7 @@ Barchart.prototype.wrangleData = function(){
   var vis = this;
   vis.displayData = vis.data.filter(function(d){ return d.year == vis.year; });
 
-  vis.updateVis();
+  vis.sort();
 };
 
 Barchart.prototype.changeYear = function(){
