@@ -24,20 +24,16 @@ StdevList.prototype.wrangleData = function(){
   vis.metric = $('#metric-select2').val();
   vis.year = $('#year-select2').val();
   vis.term = $('#term-select2').val();
-
+  
   vis.displayData = vis.data;
-  console.log(vis.department);
   vis.displayData = vis.displayData.filter(function(d){
     return ((d.department === vis.department) &
             (d.term === vis.term) &
             (d.year === vis.year));
   });
   vis.displayData = vis.displayData.sort(function(a, b){
-    console.log(vis.metric);
-    console.log(+b[vis.metric]);
     return (+a[vis.metric] < +b[vis.metric]? 1 : -1);
   });
-  console.log(vis.displayData);
 
   vis.updateVis();
 };
