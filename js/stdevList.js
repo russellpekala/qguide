@@ -1,11 +1,8 @@
-StdevList = function(_parentElement, _data, _department, _year, _metric, _classSizeRange){
+StdevList = function(_parentElement, _data, _department, _year, _classSizeRange){
 
   this.parentElement = _parentElement;
   this.data = _data;
-  this.year = _year; // Which years, or "all"
-  this.metric = _metric;  // Workload, Rating, something like that.
   this.classSizeRange = _classSizeRange; // What class sizes to consider.
-  this.department = _department;
   this.displayData = [];
 
   this.initVis();
@@ -36,7 +33,9 @@ StdevList.prototype.wrangleData = function(){
             (d.year === vis.year));
   });
   vis.displayData = vis.displayData.sort(function(a, b){
-    return a[vis.metric] < b[vis.metric];
+    console.log(vis.metric);
+    console.log(+b[vis.metric]);
+    return (+a[vis.metric] < +b[vis.metric]? 1 : -1);
   });
   console.log(vis.displayData);
 
