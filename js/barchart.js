@@ -8,17 +8,23 @@ Barchart = function(_parentElement, _data, _year, _metric, _metrics, _convention
   this.conventions = _conventions;
   this.displayData = [];
 
-  this.preprocess();
+    // this.preprocess();
   this.initVis();
+    this.preprocess();
+    this.wrangleData();
+
 };
 
 Barchart.prototype.initVis = function(){
   var vis = this;
 
-  vis.margin = { top: 40, right: 100, bottom: 25, left: 70 };
+  vis.margin = { top: 40, right: 60, bottom: 25, left: 60 };
 
   vis.width = 700 - vis.margin.left - vis.margin.right;
-  vis.height = 800 - vis.margin.top - vis.margin.bottom;
+  vis.gap = 40; // in pixels
+  vis.widthLeft = 400;
+  vis.widthRight = vis.width - vis.widthLeft - vis.gap;
+  vis.height = 500 - vis.margin.top - vis.margin.bottom;
   vis.padding = 0.25;
 
   // SVG drawing area
@@ -32,24 +38,36 @@ Barchart.prototype.initVis = function(){
     .rangeRound([0, vis.height])
     .padding(vis.padding);
 
-  vis.x = d3.scaleLinear()
-    .rangeRound([0, vis.width]);
+  vis.xleft = d3.scaleLinear()
+    .rangeRound([0, vis.widthLeft]);
+
+    vis.xright = d3.scaleLinear()
+        .rangeRound([0, vis.widthRight]);
 
   vis.color = d3.scaleOrdinal()
-    .range(["#A80022", "#D8ADB6", "#F27991", "#992233", "#FFCCD6"]);
-
-  vis.xAxis = d3.axisTop(vis.x);
+    .range(["#A80022", "#D8ADB6", "#F27991", "#992233", "#FFCCD6", "green", "blue"]);
 
   vis.yAxis = d3.axisLeft(vis.y);
 
-  vis.wrangleData();
+  vis.numSelected = 15;
 };
 
 Barchart.prototype.wrangleData = function(){
   var vis = this;
-  vis.displayData = vis.data.filter(function(d){ return d.year == vis.year; });
+  vis.displayData = vis.data.filter(function(d){ return d.year == vis.year; }).slice(0, vis.numSelected - 1);
 
   vis.sort();
+};
+
+Barchart.prototype.changeNumSelected = function(){
+    var vis = this;
+    d3.selectAll("#barchart .bar").remove();
+    // d3.selectAll("#barchart.subre").remove();
+    d3.selectAll("#barchart .y-axis").remove();
+
+    vis.numSelected = $('#num-select').val();
+
+    vis.wrangleData();
 };
 
 Barchart.prototype.changeYear = function(){
@@ -121,7 +139,12 @@ Barchart.prototype.updateVis = function() {
 
   vis.svg.selectAll("text").remove();
 
-  vis.x.domain([0, d3.max(vis.displayData, function(d) { return d[vis.metric + '_boxes']["4"].x1; })]);
+  vis.xleft.domain([0, d3.max(vis.displayData, function(d) {
+    return d[vis.metric + '_boxes']["4"].x1;
+  })]);
+    vis.xright.domain([0, d3.max(vis.displayData, function(d) {
+        return d[vis.metric + '_boxes']["6"].x1;
+    })]);
   vis.y.domain(vis.displayData.map(function(d) { return d.department1; }));
   vis.color.domain(makeColorDomain(vis.metric));
 
@@ -130,7 +153,7 @@ Barchart.prototype.updateVis = function() {
     .attr("class", "legend-holder")
     .attr("id", "bar-legend-holder");
 
-  vis.legendTab = [0, 80, 160, 240, 320];
+  vis.legendTab = [0, 80, 160, 240, 320, 400, 480];
 
   vis.barLegend = vis.barLegendHolder.selectAll(".legend")
     .data(makeColorDomain(vis.metric));
@@ -153,7 +176,16 @@ Barchart.prototype.updateVis = function() {
     .style("text-anchor", "begin")
     .style("font" ,"10px sans-serif")
     .text(function(d, i){
-      return vis.conventions[vis.metric]["intervals"][i].label;
+      if(i <= 4){
+        return vis.conventions[vis.metric]["intervals"][i].label;
+      }
+      else if (i == 5){
+        return "In-Variance";
+      }
+      else if (i == 6){
+          return "Out-Variance";
+      }
+
     });
 
   d3.selectAll(".axis")
@@ -175,7 +207,7 @@ Barchart.prototype.updateVis = function() {
     .attr("transform", function(d) { return "translate(0," + vis.y(d.department1) + ")"; });
 
   vis.text1 = vis.bars.append("text")
-    .attr("x", function(d) { return 560; })
+    .attr("x", function(d) { return 420; })
     .attr("y", vis.y.bandwidth()/2)
     .attr("dy", "0.5em")
     .attr("dx", "0.5em")
@@ -187,31 +219,31 @@ Barchart.prototype.updateVis = function() {
       return d3.format(".1f")(d[vis.metric + '_mean']);
     });
 
-  vis.text2 = vis.bars.append("text")
-    .attr("x", function(d) { return 590; })
-    .attr("y", vis.y.bandwidth()/2)
-    .attr("dy", "0.5em")
-    .attr("dx", "0.5em")
-    .style("font" ,"12px sans-serif")
-    .style("text-anchor", "end")
-    .style("fill", 'black')
-    .style("cursor", "pointer")
-    .text(function(d) {
-      return d3.format(".1f")(d[vis.metric + '_instdev']);
-    });
-
-  vis.text3 = vis.bars.append("text")
-    .attr("x", function(d) { return 620; })
-    .attr("y", vis.y.bandwidth()/2)
-    .attr("dy", "0.5em")
-    .attr("dx", "0.5em")
-    .style("font" ,"12px sans-serif")
-    .style("text-anchor", "end")
-    .style("fill", 'black')
-    .style("cursor", "pointer")
-    .text(function(d) {
-      return d3.format(".1f")(d[vis.metric + '_outstdev']);
-    });
+  // vis.text2 = vis.bars.append("text")
+  //   .attr("x", function(d) { return 590; })
+  //   .attr("y", vis.y.bandwidth()/2)
+  //   .attr("dy", "0.5em")
+  //   .attr("dx", "0.5em")
+  //   .style("font" ,"12px sans-serif")
+  //   .style("text-anchor", "end")
+  //   .style("fill", 'black')
+  //   .style("cursor", "pointer")
+  //   .text(function(d) {
+  //     return d3.format(".1f")(d[vis.metric + '_instdev']);
+  //   });
+  //
+  // vis.text3 = vis.bars.append("text")
+  //   .attr("x", function(d) { return 620; })
+  //   .attr("y", vis.y.bandwidth()/2)
+  //   .attr("dy", "0.5em")
+  //   .attr("dx", "0.5em")
+  //   .style("font" ,"12px sans-serif")
+  //   .style("text-anchor", "end")
+  //   .style("fill", 'black')
+  //   .style("cursor", "pointer")
+  //   .text(function(d) {
+  //     return d3.format(".1f")(d[vis.metric + '_outstdev']);
+  //   });
 
   vis.subbars = vis.bars.selectAll("rect")
     .data(function(d){ return d[vis.metric + '_boxes']; });
@@ -228,8 +260,12 @@ Barchart.prototype.updateVis = function() {
     .transition()
     .duration(1000)
     .attr("height", vis.y.bandwidth)
-    .attr("x", function(d) { return vis.x(d.x0); })
-    .attr("width", function(d) { return vis.x(d.x1) - vis.x(d.x0); })
+    .attr("x", function(d, i) {
+      if(i <=4 ) { return vis.xleft(d.x0) } else { return vis.widthLeft + vis.gap + vis.xright(d.x0); };
+    })
+    .attr("width", function(d, i) {
+      if (i <= 4) { return vis.xleft(d.x1) - vis.xleft(d.x0) } else { return vis.xright(d.x1) - vis.xright(d.x0)};
+    })
     .style("fill", function(d) { return vis.color(d.name); })
     .attr("class", "subrect")
     .style("cursor", "pointer");
@@ -243,13 +279,14 @@ function makeColorDomain(metric){
   nums.forEach(function(d){
     lst.push(metric + '_s' + d.toString());
   });
-  return lst;
+  return lst.concat([metric + '_invar', metric + '_outvar']);
 }
 
 Barchart.prototype.preprocess = function() {
   var vis = this;
 
   vis.data.forEach(function(d) {
+    // Get the survey boxes in
     vis.metrics.forEach(function(m){
       var x0 = 0, idx = 0;
       d[m + '_boxes'] = makeColorDomain(m).map(function(name) {
@@ -259,11 +296,27 @@ Barchart.prototype.preprocess = function() {
           x1: x0 += d[name]
         };
       });
+      // Normalize
       var total = d[m + '_boxes'][4].x1;
       d[m + '_boxes'].forEach(function(d){
         d.x0 = d.x0/total;
         d.x1 = d.x1/total;
       });
+      // Add in stats
+        var invar = d[m + "_instdev"] * d[m + "_instdev"];
+        var outvar = d[m + "_outstdev"] * d[m + "_outstdev"];
+        d[m + '_boxes'] = d[m + '_boxes'].slice(0,5);
+      d[m + '_boxes'].push({
+              name: m + "_invar",
+              x0: 0,
+              x1: invar
+          });
+      d[m + '_boxes'].push({
+          name: m + "_outvar",
+          x0: invar,
+          x1: invar + outvar
+      });
     });
+
   });
 };

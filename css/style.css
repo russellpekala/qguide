@@ -15,3 +15,29 @@ rect.bar {
     stroke: purple;
     stroke-width: 1.5px;
 }
+
+body {
+    margin: 5% 10%;
+    background-color: #FAFAFA;
+}
+
+p, ol {
+    text-align: left;
+}
+
+th {
+    background-color: crimson;
+}
+
+td, th {
+    border: 1px solid black;
+}
+
+table {
+    border: 2px solid black;
+    width: 700px;
+}
+
+td .col_0 {
+    text-align: left;
+}

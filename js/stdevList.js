@@ -24,6 +24,8 @@ StdevList.prototype.wrangleData = function(){
   vis.metric = $('#metric-select2').val();
   vis.year = $('#year-select2').val();
   vis.term = $('#term-select2').val();
+    vis.num = $('#num-select2').val();
+    vis.sortOrder = $('#order-select2').val();
   
   vis.displayData = vis.data;
   vis.displayData = vis.displayData.filter(function(d){
@@ -31,12 +33,30 @@ StdevList.prototype.wrangleData = function(){
             (d.term === vis.term) &
             (d.year === vis.year));
   });
+
+  // If truncating to popular classes, need to have this.
   vis.displayData = vis.displayData.sort(function(a, b){
-    return (+a[vis.metric] < +b[vis.metric]? 1 : -1);
+    return (+a["Enrollment"] < +b["Enrollment"]? 1 : -1);
+  }).slice(0, vis.num);
+  vis.displayData = vis.displayData.sort(function(a, b){
+    return (+a[vis.metric] < +b[vis.metric]? 1 * vis.sortOrder : -1 * vis.sortOrder);
   });
 
   vis.updateVis();
 };
+
+function colspan(index){
+  console.log('colspan called');
+  if (index == 0){
+    return 200;
+  }
+  else if (index == 1){
+    return 100;
+  }
+  else {
+    return 100;
+  }
+}
 
 StdevList.prototype.updateVis = function(){
   var vis = this;
@@ -53,6 +73,8 @@ StdevList.prototype.updateVis = function(){
 
   var headers = headersTr.selectAll('th').data(titles);
   headers = headers.enter().append('th')
+      .attr("colspan", function(d, i) { return colspan(i); })
+      .attr("class", function(d, i) { return 'col_' + i; })
     .merge(headers)
     .text(function (d){
       return d;
@@ -72,6 +94,8 @@ StdevList.prototype.updateVis = function(){
     .attr('data-th', function (d) {
       return d.name;
     })
+      .attr("colspan", function(d, i) { return colspan(i); })
+      .attr("class", function(d, i) { return 'col_' + i; })
     .text(function (d) {
       return d.value;
     });

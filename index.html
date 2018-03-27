@@ -6,76 +6,122 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-    <h1>Analysis of the Q Guide</h1>
-    <h3>Comments frequency Plot Sortable by term/department. </h3>
-    <select onchange="cdf.wrangleData('department')" class="selectpicker" id="department-select">
-        <option value="MATH">Math</option>
-        <option value="HIST">History</option>
-    </select>
-    <select onchange="cdf.wrangleData('year')" class="selectpicker" id="first-year-select">
-        <option value="spring_2017">Spring 2017</option>
-        <option value="fall_2016">Fall 2016</option>
-    </select>
+    <div class="text-center">
+        <h1>Analysis of the Q Guide</h1>
+        <p>
+            The Harvard Q Guide has been scraped several times in the past, each time driving out certain elements
+            of the data.  Yet despite this, and despite the importance of understanding our own education, there is no
+            one resource for understanding this data (besides the tools the University provides).  In this analysis,
+            I want to provide a starting point to do a lot of cool data analyses so that other people might be able
+            to follow easily in my footsteps and create a shared collaborative space for Q Guide analysis.
+        </p>
+        <p>
+            There are so many natural questions that one might ask about the Q Guide itself.
+        </p>
+        <ol>
+            <li>What is being taught and how has this changed over time?</li>
+            <li>What are the best/hardest courses or concentrations?</li>
+            <li>What is being said on the Q Guide and is there any way to systematically understand the comments?</li>
+        </ol>
+        <p>
+            We'll start with the information that everyone wants to see first: the workload and ratings scores.
+            We weight by student not by class so as to not inflate the influence of small courses.
+            The best rated courses are We
+            notice (showing the top 30 concentrations) that Math, Computer Science, Physics, and Chemistry tended
+            to be the most demanding courses going as far back as the data went.
+        </p>
 
-    <div id="cdf"></div>
+        <h3>Barchart for Course Ratings by Department</h3>
+        <select onchange="barchart.changeNumSelected()" class="selectpicker" id="num-select">
+            <option value=15>Show Top 15 Most Popular</option>
+            <option value=30>Show Top 30 Most Popular</option>
+        </select>
+        <select onchange="barchart.changeYear()" class="selectpicker" id="year-select">
+            <option value=2017>2017</option>
+            <option value=2016>2016</option>
+            <option value=2015>2015</option>
+        </select>
+        <select onchange="barchart.changeMetric()" class="selectpicker" id="metric-select">
+            <option value="workload">Workload</option>
+            <option value="overall">Overall Rating</option>
+        </select>
+        <select onchange="barchart.sort()" class="selectpicker" id="sort-select">
+            <option value="alphabetical">Alphabetical</option>
+            <option value="mean">Mean</option>
+            <option value="outstdev">Inter-Standard Deviation</option>
+            <option value="instdev">Intra-Standard Deviation</option>
+        </select>
+        <div id="barchart"></div>
+        <p>
+            This is perhaps something that people already knew.
+        </p>
+        <h2>What's with the High Workload Standard Deviation?</h2>
+        <select onchange="stdevList.wrangleData()" class="selectpicker" id="year-select2">
+            <option value=2017>2017</option>
+            <option value=2016>2016</option>
+            <option value=2015>2015</option>
+        </select>
+        <select onchange="stdevList.wrangleData()" class="selectpicker" id="term-select2">
+            <option value="spring">Spring</option>
+            <option value="fall">Fall</option>
+        </select>
+        <select onchange="stdevList.wrangleData()" class="selectpicker" id="metric-select2">
+            <option value="Workload">Workload</option>
+            <option value="Overall">Overall Rating</option>
+        </select>
+        <select onchange="stdevList.wrangleData()" class="selectpicker" id="department-select2">
+            <option value="MATH">Math</option>
+            <option value="HIST">History</option>
+        </select>
+        <select onchange="stdevList.wrangleData()" class="selectpicker" id="order-select2">
+            <option value="1">Least to Greatest</option>
+            <option value="-1">Greatest to Least</option>
+        </select>
+        <select onchange="stdevList.wrangleData()" class="selectpicker" id="num-select2">
+            <option value=15>Show Top 15 Most Popular</option>
+            <option value=30>Show Top 30 Most Popular</option>
+            <option value=200>Show All</option>
+        </select>
+        <div id="stdevlist"></div>
 
-    <h3>Course Workload and Comment Word Frequencies</h3>
-    <div id="scatter"></div>
-    <div id="histogram"></div>
 
-    <h3>Barchart for Course Ratings by Department</h3>
-    <select onchange="barchart.changeYear()" class="selectpicker" id="year-select">
-        <option value=2017>2017</option>
-        <option value=2016>2016</option>
-        <option value=2015>2015</option>
-    </select>
-    <select onchange="barchart.changeMetric()" class="selectpicker" id="metric-select">
-        <option value="workload">Workload</option>
-        <option value="overall">Overall Rating</option>
-    </select>
-    <select onchange="barchart.sort()" class="selectpicker" id="sort-select">
-        <option value="alphabetical">Alphabetical</option>
-        <option value="mean">Mean</option>
-        <option value="outstdev">Inter-Standard Deviation</option>
-        <option value="instdev">Intra-Standard Deviation</option>
-    </select>
-    <div id="barchart"></div>
 
-    <h2>What's with the High Workload Standard Deviation?</h2>
-    <select onchange="stdevList.wrangleData()" class="selectpicker" id="year-select2">
-        <option value=2017>2017</option>
-        <option value=2016>2016</option>
-        <option value=2015>2015</option>
-    </select>
-    <select onchange="stdevList.wrangleData()" class="selectpicker" id="term-select2">
-        <option value="spring">Spring</option>
-        <option value="fall">Fall</option>
-    </select>
-    <select onchange="stdevList.wrangleData()" class="selectpicker" id="metric-select2">
-        <option value="Workload">Workload</option>
-        <option value="Overall">Overall Rating</option>
-    </select>
-    <select onchange="stdevList.wrangleData()" class="selectpicker" id="department-select2">
-        <option value="MATH">Math</option>
-        <option value="HIST">History</option>
-    </select>
-    <div id="stdevlist"></div>
 
-    <select onchange="enrollmentHistogram.updateKey()" class="selectpicker" id="enrollment-select">
-        <option value="MATH">Math</option>
-        <option value="HIST">History</option>
-    </select>
-    <div id="enrollment"></div>
-    <!--<div id="sort-methods">-->
+
+
+        <select onchange="enrollmentHistogram.updateKey()" class="selectpicker" id="enrollment-select">
+            <option value="MATH">Math</option>
+            <option value="HIST">History</option>
+        </select>
+
+        <div id="enrollment"></div>
+
+        <h3>Comments frequency Plot Sortable by term/department. </h3>
+        <select onchange="cdf.wrangleData('department')" class="selectpicker" id="department-select">
+            <option value="MATH">Math</option>
+            <option value="HIST">History</option>
+        </select>
+        <select onchange="cdf.wrangleData('year')" class="selectpicker" id="first-year-select">
+            <option value="spring_2017">Spring 2017</option>
+            <option value="fall_2016">Fall 2016</option>
+        </select>
+
+        <div id="cdf"></div>
+
+        <h3>Course Workload and Comment Word Frequencies</h3>
+        <div id="scatter"></div>
+        <div id="histogram"></div>
+
+        <!--<div id="sort-methods">-->
         <!--<p>Sort Methods: </p>-->
         <!--<button class="button2 hvr-fade2" onClick="resort(final_departments, 'name')">Alphabetical</button>-->
         <!--<button id="median" class="button2 hvr-fade2" onClick="resort(final_departments, 'median')">Median</button>-->
         <!--<button class="button2 hvr-fade2" onClick="resort(final_departments, 'mean')">Mean</button>-->
         <!--<button class="button2 hvr-fade2" onClick="resort(final_departments,'median_student')">Median Student</button>-->
         <!--<button id="total_enrollment" class="button2 hvr-fade2" onClick="resort(final_departments,'total_enrollment')">Total Enrollment</button>-->
-    <!--</div>-->
-    <!--<div id="button1"></div>-->
-
+        <!--</div>-->
+        <!--<div id="button1"></div>-->
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -88,4 +134,5 @@
     <script src="js/stdevlist.js"></script>
 
     <script src="js/main.js"></script>
+
 </body>
