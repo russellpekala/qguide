@@ -46,7 +46,6 @@ StdevList.prototype.wrangleData = function(){
 };
 
 function colspan(index){
-  console.log('colspan called');
   if (index == 0){
     return 200;
   }

@@ -18,8 +18,8 @@ function makeScatterData(raw_data, categories){
     var num = d.length;
     var mean = d.reduce(function(a, b){ return a + b; }) / num;
     result.push({
-      word: k,
-      num: num,
+      name: k,
+      frequency: num,
       workload: mean,
       category: assignments[k]
     });
@@ -33,24 +33,29 @@ d3.json("data/cdf_data.json", function(data){
     "y": 'Cumulative Frequency',
     "title": 'Cumulative Distribution of Words'
   };
-  cdf = new Cdf('cdf', data, labels);
+  wordcloud = new WordCloud('wordcloud', data, labels);
+  // cdf = new Cdf('cdf', data, labels);
 });
 
 d3.json("data/short_workload_list.json", function(data){
-  var labels = {
-    "x": 'Workload',
-    "y": 'Number of Occurances at that Workload',
-    "title": 'A Look at The Use of Words'
+  var histogramLabels = {
+    "y": 'Frequency'
   };
   d3.json("data/word_categories.json", function(wordCategories){
     var scatterData = makeScatterData(data, wordCategories);
     var labelsScatter = {
-      "x": 'Frequency',
-      "y": 'Workload',
-      "title": 'A Look at The Use of Words--Scatter'
+      "y": 'Frequency',
     };
-    myscatter = new Scatter('scatter', scatterData, 'workload', labelsScatter);
-    myhistogram = new Histogram('histogram', data, 'easy', labels, 30, 15);
+    myscatter = new Scatter('scatter', scatterData, 'frequency', 'workload', labelsScatter, _size={
+        width: 700,
+        height: 200,
+        margin: { top: 20, right: 100, bottom: 20, left: 70 }
+    }, isWorkScatter=false);
+    myhistogram = new Histogram('histogram', data, 'nothing', histogramLabels, _maxX=10, _numTicks=30, _size={
+        width: 700,
+        height: 100,
+        margin: { top: 5, right: 100, bottom: 60, left: 70 }
+    });
   })
 });
 
@@ -73,10 +78,34 @@ d3.json("data/enrollment.json", function(data){
     "y": 'Number of Classes',
     "title": 'Enrollment Data'
   };
-  enrollmentHistogram = new Histogram('enrollment', data, 'MATH', labels, 30, 150);
+  enrollmentHistogram = new Histogram('enrollment', data, 'MATH', labels, 150, numTicks=30, size={});
 });
 
 d3.csv("data/ranked.csv", function(data){
-  console.log(data);
   stdevList = new StdevList('stdevlist', data, 'MATH', 2017, 'workload', [10, 100]);
+
+  workLineup = new LineUp('work-lineup', [], labels={top: "Likes to Work", bottom: "Avoids Work"}, size={
+      width: 200,
+      height: 350,
+      margin: { top: 40, right: 100, bottom: 60, left: 70 }
+  });
+  var sampleData2 = [{ year: 2014, MATH: 140, HIST: 100}, { year: 2015, MATH: 110, HIST: 60}, { year: 2016, MATH: 110, HIST: 90}]
+
+  var sampleData = {
+      "MATH": [{ name: "Math 113", enrollment: 12, workload: 25, overall_rating: 4.2 },
+          { name: "Math 11", enrollment: 22, workload: 6, overall_rating: 4.7 }],
+      "HIST" : [{ name: "Hist 11", enrollment: 32, workload: 9, overall_rating: 4.1 }]
+  };
+
+  workScatter = new Scatter('work-scatter', sampleData, 'workload', 'overall_rating', labels={x: "Rating", y: "Workload"}, size={
+      width: 500,
+      height: 350,
+      margin: { top: 40, right: 100, bottom: 60, left: 70 }
+  }, isWorkScatter=true);
+
+  area = new Area('area', sampleData2, labels={x:"semester", y: "enrollment"}, size={
+        width: 500,
+        height: 350,
+        margin: { top: 40, right: 100, bottom: 60, left: 70 }
+    });
 });

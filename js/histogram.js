@@ -1,7 +1,7 @@
 
 var parse = d3.format(".2s");
 
-Histogram = function(_parentElement, _data, _startKey, _labels, _numTicks, _maxX){
+Histogram = function(_parentElement, _data, _startKey, _labels, _maxX, _numTicks, _size){
   var vis = this;
 
   vis.parentElement = _parentElement;
@@ -9,8 +9,10 @@ Histogram = function(_parentElement, _data, _startKey, _labels, _numTicks, _maxX
   vis.displayData = [];
   vis.key = _startKey;
   vis.labels = _labels;
-  vis.numTicks = _numTicks;
   vis.maxX = _maxX;
+  vis.numTicks = _numTicks;
+  vis.size = _size;
+  vis.view = "length";
 
   vis.initVis();
 };
@@ -23,10 +25,10 @@ Histogram = function(_parentElement, _data, _startKey, _labels, _numTicks, _maxX
 Histogram.prototype.initVis = function(){
   var vis = this;
 
-  vis.margin = { top: 40, right: 10, bottom: 70, left: 50 };
+  vis.margin = vis.size.margin ? vis.size.margin : { top: 40, right: 30, bottom: 70, left: 50 };
 
-  vis.width = 500 - vis.margin.left - vis.margin.right;
-  vis.height = 300 - vis.margin.top - vis.margin.bottom;
+  vis.width = (vis.size.width ? vis.size.width : 500) - vis.margin.left - vis.margin.right;
+  vis.height = (vis.size.height ? vis.size.height : 300) - vis.margin.top - vis.margin.bottom;
   vis.padding = .25;
 
   // SVG drawing area
@@ -47,9 +49,9 @@ Histogram.prototype.initVis = function(){
     .attr("transform", "translate(0," + vis.height + ")");
 
   vis.yAxis = vis.svg.append("g")
-    .attr("class", "y-axis")
+    .attr("class", "y-axis");
 
-  vis.wrangleData(vis.key);
+  vis.wrangleData();
 };
 
 Histogram.prototype.updateKey = function(newKey){
@@ -65,22 +67,61 @@ Histogram.prototype.updateKey = function(newKey){
   vis.wrangleData();
 };
 
+Histogram.prototype.updateView = function(newView){
+    var vis = this;
+
+    vis.view = $("#view-select").val();
+
+    vis.wrangleData();
+};
+
 Histogram.prototype.wrangleData = function(){
   var vis = this;
 
-  vis.displayData = vis.data[vis.key];
+  if (vis.key === "nothing"){
+    vis.displayData = [];
+    vis.svg.append("text")
+        .attr("id", "warning")
+        .attr("x", vis.width / 2)
+        .attr("y", vis.height / 2)
+        .style("text-anchor", "middle")
+        .text("Click a dot");
+  }
+  else {
+    vis.displayData = vis.data[vis.key]
+  }
 
   vis.displayData.forEach(function(d, i){
     vis.displayData[i] = Math.min(d, vis.maxX); // Truncate points.
   });
 
-  vis.x.domain(d3.extent(vis.displayData, function(d){ return d; }));
+  vis.x.domain([0, d3.max(vis.displayData, function(d){ return d; })]);
 
-  vis.bins = d3.histogram()
+  vis.bins = vis.key === "nothing" ? [] : d3.histogram()
     .domain(vis.x.domain())
     .thresholds(vis.x.ticks(vis.numTicks))
     (vis.displayData);
 
+  vis.bins2 = vis.bins.map(function(d){
+    if (d.length === 0){
+      return {
+          val: 0,
+          x0: d.x0,
+          x1: d.x1
+      }
+    }
+    else {
+      return {
+          val: d.reduce(function(a, b){
+             return a + b;
+          }),
+          x0: d.x0,
+          x1: d.x1
+      }
+    }
+  });
+
+  vis.binUp = vis.view === "val" ? vis.bins2 : vis.bins;
   vis.updateVis();
 };
 
@@ -88,23 +129,30 @@ Histogram.prototype.updateVis = function(){
   var vis = this;
 
   vis.svg.selectAll(".label").remove();
+  if (vis.key !== "nothing"){
+    vis.svg.select("#warning").remove();
+  }
 
-  vis.y.domain([0, d3.max(vis.bins, function(d) { return d.length; })]);
+  // vis.view = length or val
+  vis.y.domain([0, d3.max(vis.binUp, function(d) { return d[vis.view]; })]);
 
-  var widthvar = vis.x(vis.bins[0].x1) - vis.x(vis.bins[0].x0);
 
-  vis.bar = vis.svg.selectAll(".bar").data(vis.bins);
+  var widthvar = vis.key === "nothing" ? 0 : (vis.x(vis.bins[0].x1) - vis.x(vis.bins[0].x0));
+
+  vis.bar = vis.svg.selectAll(".bar").data(vis.binUp);
   vis.bar = vis.bar.enter().append("rect")
     .merge(vis.bar)
+      .transition()
+      .duration(500)
     .attr("class", "bar")
     .attr("x", function(d) {
       return (vis.x(d.x0));
     })
     .attr("y", function(d){
-      return vis.y(d.length);
+      return vis.y(d[vis.view]);
     })
     .attr("height", function(d){
-      return vis.height - vis.y(d.length);
+      return vis.height - vis.y(d[vis.view]);
     })
     .attr("width", widthvar * (1 - vis.padding));
 
@@ -119,15 +167,9 @@ Histogram.prototype.updateVis = function(){
   vis.svg.select(".y-axis")
     .transition()
     .duration(500)
-    .call(vis.yAxis);
+    .call(vis.yAxis.ticks(3));
 
   // Labels
-  vis.svg.append('text')
-    .attr('class', 'title label')
-    .attr('text-anchor', 'middle')
-    .attr('transform', "translate("+ vis.width/2 +","+ (-20) +")")
-    .text(vis.labels.title);
-
   vis.svg.append('text')
     .attr('class', 'axis-label label')
     .attr('text-anchor', 'middle')
