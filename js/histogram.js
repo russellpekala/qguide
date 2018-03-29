@@ -1,7 +1,7 @@
 
 var parse = d3.format(".2s");
 
-Histogram = function(_parentElement, _data, _startKey, _labels, _maxX, _numTicks, _size){
+Histogram = function(_parentElement, _data, _startKey, _labels, _maxX, _numTicks, _size, _categories){
   var vis = this;
 
   vis.parentElement = _parentElement;
@@ -13,6 +13,7 @@ Histogram = function(_parentElement, _data, _startKey, _labels, _maxX, _numTicks
   vis.numTicks = _numTicks;
   vis.size = _size;
   vis.view = "length";
+  vis.categories = _categories;
 
   vis.initVis();
 };
@@ -50,6 +51,9 @@ Histogram.prototype.initVis = function(){
 
   vis.yAxis = vis.svg.append("g")
     .attr("class", "y-axis");
+
+  vis.color = d3.scaleOrdinal(d3.schemeCategory10)
+      .domain(Object.values(vis.categories).map(function(d){ return d.category; }).unique());
 
   vis.wrangleData();
 };
@@ -153,6 +157,10 @@ Histogram.prototype.updateVis = function(){
     })
     .attr("height", function(d){
       return vis.height - vis.y(d[vis.view]);
+    })
+    .style("fill", function(d) {
+      console.log(vis.key);
+        return vis.color(vis.categories[vis.key].category);
     })
     .attr("width", widthvar * (1 - vis.padding));
 

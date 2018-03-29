@@ -85,25 +85,51 @@
         <div id="stdevlist"></div>
 
         <h2> What are people studying?  </h2>
+        <div id="department-label"></div>
         <div id="area"></div>
+        <p>
+            This chart originally seems a bit uninteresting, there isn't the kind of dramatic expansion of
+            enrollment in Statistics and Computer Science that might have been expected (though those trends
+            are significant and certainly viewable on a larger timescale).  The fact that there is more enrollment
+            in the fall semester rather than the spring semester is something that is caused by more people taking time
+            off during the second rather than the first semester.
+        </p>
 
+        <h2> What's class like?</h2>
         <select onchange="enrollmentHistogram.updateKey()" class="selectpicker" id="enrollment-select">
             <option value="MATH">Math</option>
             <option value="HIST">History</option>
         </select>
-
         <select onchange="enrollmentHistogram.updateView()" class="selectpicker" id="view-select">
             <option value="length">Class Level</option>
             <option value="val">Student Level</option>
         </select>
-        <div id="enrollment"></div>
+        <div class="row side-by-side">
+            <div id="enrollment"></div>
+            <div id="histogram-lineup"></div>
+        </div>
 
         <h2> Who likes to work the most?  </h2>
         <select onchange="workScatter.updateDept()" class="selectpicker" id="department-select">
             <option value="MATH">Math</option>
             <option value="HIST">History</option>
+            <option value="AESTHINT">Aesthetic and Interpretive</option>
         </select>
-        <div class="side-by-side">
+        <select onchange="workScatter.wrangleData()" class="selectpicker" id="update-term">
+            <option value="2017_spring">Spring 2017</option>
+            <option value="2016_fall">Fall 2016</option>
+            <option value="2016_spring">Spring 2016</option>
+            <option value="2015_fall">Fall 2015</option>
+            <option value="2015_spring">Spring 2015</option>
+            <option value="2014_fall">Fall 2014</option>
+            <option value="2014_spring">Spring 2014</option>
+            <option value="2013_fall">Fall 2013</option>
+            <option value="2013_spring">Spring 2013</option>
+            <option value="2012_fall">Fall 2012</option>
+            <option value="2012_spring">Spring 2012</option>
+            <option value="2011_fall">Fall 2011</option>
+        </select>
+        <div class="row side-by-side">
             <div id="work-scatter"></div>
             <div id="work-lineup"></div>
         </div>

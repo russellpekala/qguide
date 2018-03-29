@@ -1,15 +1,16 @@
-Scatter = function(_parentElement, _data, _metricX, _metricY, _labels, _size, _isWorkScatter){
+Scatter = function(_parentElement, _data, _metricX, _metricY, _labels, _size, _isWorkScatter, _categories){
 
   this.parentElement = _parentElement;
   this.data = _data;
   this.metricY = _metricY;
-    this.metricX = _metricX;
-    this.displayData = [];
+  this.metricX = _metricX;
+  this.displayData = [];
   this.labels = _labels;
   this.labelStatus = $("#label-select").val();
   this.size = _size;
   this.isWorkScatter = _isWorkScatter;
   this.department = "MATH";
+  this.categories = _categories;
 
   this.initVis();
 };
@@ -57,9 +58,11 @@ Scatter.prototype.initVis = function(){
         vis.activeCategories = vis.color.domain().slice(0, 2); // By default show the first two.
     }
     else {
+        vis.color = d3.scaleOrdinal(d3.schemeCategory10)
+            .domain(Object.values(vis.categories).map(function(d){ return d.category; }).unique());
         vis.enrollmentScale = d3.scaleLinear()
-            .range([2, 7]);
-        vis.sizer = "enrollment";
+            .range([2, 10]);
+        vis.sizer = "Enrollment";
     }
 
   vis.wrangleData();
@@ -73,14 +76,21 @@ Scatter.prototype.updateMetricY = function(newMetricY){
   vis.wrangleData();
 };
 
+
 Scatter.prototype.wrangleData = function(){
   var vis = this;
 
+    var v = $("#update-term").val();
+    vis.term = v.split("_")[1];
+    vis.year = v.split("_")[0];
+
   vis.displayData = [];
-  vis.runningTotal = 0;
   if (vis.isWorkScatter){
-      console.log(vis.department);
-    vis.displayData = vis.data[vis.department];
+    vis.displayData = vis.data.filter(function(d, i){
+        return ((d.department === vis.department) &&
+            (d.term === vis.term) &&
+            (d.year === vis.year));
+    });
   }
   else {
       vis.displayData = vis.data.filter(function(d){
@@ -119,7 +129,7 @@ Scatter.prototype.adjustCategories = function(val){
 var tool_tip = d3.tip()
     .attr("class", "d3-tip")
     .offset([-8, 0])
-    .html(function(d) { return d.name });
+    .html(function(d) { return d.Course });
 
 Scatter.prototype.updateDept = function(){
     var vis = this;
@@ -136,13 +146,19 @@ Scatter.prototype.updateVis = function(){
   vis.svg.selectAll(".legend-text").remove();
   vis.svg.selectAll(".legend").remove();
 
+
   vis.y.domain([0, d3.max(vis.displayData, function(d){
-      return d[vis.metricX];
+      return d[vis.metricY];
   })]);
 
   if (vis.isWorkScatter){
-      vis.x.domain([2, 5]); // Approx domain for rating.
-      vis.enrollmentScale.domain(d3.extent(vis.displayData, function(d){ return d[vis.sizer]; }));
+      vis.y.domain([2, 5]); // Approx domain for rating.
+      vis.x.domain([0, d3.max(vis.displayData, function(d){
+          return +d[vis.metricX];
+      })]);
+      vis.enrollmentScale.domain(d3.extent(vis.displayData, function(d){
+          return +d[vis.sizer];
+      }));
   }
   else {
       vis.x.domain([0, 10]); // Approx domain for workload.
@@ -178,12 +194,22 @@ Scatter.prototype.updateVis = function(){
 
   vis.dot.enter().append("circle")
         .attr("class", "dot")
-        .attr("r", function(d){ return !vis.isWorkScatter ? 5 : vis.enrollmentScale(d[vis.sizer]); })
+        .attr("r", function(d){
+            return !vis.isWorkScatter ? 5 : vis.enrollmentScale(d[vis.sizer]);
+        })
       .merge(vis.dot)
-        .attr("cx", function(d){ return vis.x(d[vis.metricY]); })
-        .attr("cy", function(d){ return vis.y(d[vis.metricX]); })
+        .attr("cx", function(d){
+            return vis.x(d[vis.metricX]);
+        })
+        .attr("cy", function(d){ return vis.y(d[vis.metricY]); })
         .style("fill", function(d) {
-          return vis.isWorkScatter ? "black" : vis.color(d.category);
+            if(vis.isWorkScatter){
+                return vis.color(vis.categories[d.department].category);
+            }
+            else {
+                return vis.color(d.category);
+            }
+
         })
       .style("opacity", 0.6)
         .on("mouseover", tool_tip.show)
@@ -204,8 +230,8 @@ Scatter.prototype.updateVis = function(){
         .attr("class", "label")
         .attr("r", 5)
         .merge(vis.label)
-        .attr("x", function(d){ return 8 + vis.x(d[vis.metricY]); })
-        .attr("y", function(d){ return 3 + vis.y(d[vis.metricX]); })
+        .attr("x", function(d){ return 8 + vis.x(d[vis.metricX]); })
+        .attr("y", function(d){ return 3 + vis.y(d[vis.metricY]); })
         .text(function(d){ return d.name; });
 
     vis.label.exit().remove();
