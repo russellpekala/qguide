@@ -1,4 +1,5 @@
 Scatter = function(_parentElement, _data, _metricX, _metricY, _labels, _size, _isWorkScatter, _categories){
+    var vis = this;
 
   this.parentElement = _parentElement;
   this.data = _data;
@@ -11,6 +12,10 @@ Scatter = function(_parentElement, _data, _metricX, _metricY, _labels, _size, _i
   this.isWorkScatter = _isWorkScatter;
   this.department = "MATH";
   this.categories = _categories;
+
+  vis.toolTip = _isWorkScatter ? "Course" : "name";
+  vis.selectedWord = null;
+  console.log(vis.categories);
 
   this.initVis();
 };
@@ -51,8 +56,7 @@ Scatter.prototype.initVis = function(){
 
     // Color only relevant for word categories one.
     if (!vis.isWorkScatter){
-        vis.color = d3.scaleOrdinal()
-            .range(['#32CD32', "#ff00ff", "#7fffd4"])
+        vis.color = d3.scaleOrdinal(d3.schemeCategory10)
             .domain(vis.data.map(function(d){ return d.category; }).unique());
 
         vis.activeCategories = vis.color.domain().slice(0, 2); // By default show the first two.
@@ -64,6 +68,12 @@ Scatter.prototype.initVis = function(){
             .range([2, 10]);
         vis.sizer = "Enrollment";
     }
+
+    // Set tooltip
+    vis.tool_tip = d3.tip()
+        .attr("class", "d3-tip")
+        .offset([-8, 0])
+        .html(function(d) { console.log('scatter', d); return d[vis.toolTip]; });
 
   vis.wrangleData();
 };
@@ -115,6 +125,7 @@ Scatter.prototype.metricChangeY = function(){
 
 Scatter.prototype.adjustCategories = function(val){
     var vis = this;
+
     var idx = vis.activeCategories.indexOf(val);
     if(idx >= 0){
       vis.activeCategories.splice(idx, 1)
@@ -126,11 +137,6 @@ Scatter.prototype.adjustCategories = function(val){
     vis.wrangleData();
 };
 
-var tool_tip = d3.tip()
-    .attr("class", "d3-tip")
-    .offset([-8, 0])
-    .html(function(d) { return d.Course });
-
 Scatter.prototype.updateDept = function(){
     var vis = this;
 
@@ -139,13 +145,31 @@ Scatter.prototype.updateDept = function(){
     vis.wrangleData();
 };
 
+Scatter.prototype.selectWord = function(word){
+    var vis = this;
+
+    console.log('select word called');
+    if (word){
+        console.log("setting selected word to ", word);
+        vis.selectedWord = word;
+    }
+    console.log(vis.selectedWord);
+
+    $("#scatter .dot").css("opacity", 0.6).attr("r", 5);
+    if (!!vis.selectedWord) {
+        console.log('changing size of ', vis.selectedWord);
+        console.log($("#" + word));
+        $("#" + word).css("opacity", 1).attr("r", 8);
+    }
+};
+
 Scatter.prototype.updateVis = function(){
   var vis = this;
-  vis.svg.call(tool_tip);
+  vis.svg.call(vis.tool_tip);
   vis.svg.selectAll(".axis-label").remove();
   vis.svg.selectAll(".legend-text").remove();
   vis.svg.selectAll(".legend").remove();
-
+  vis.svg.selectAll(".dot").remove();
 
   vis.y.domain([0, d3.max(vis.displayData, function(d){
       return d[vis.metricY];
@@ -194,14 +218,17 @@ Scatter.prototype.updateVis = function(){
 
   vis.dot.enter().append("circle")
         .attr("class", "dot")
+        .attr("id", function(d){ return d.name; })
         .attr("r", function(d){
-            return !vis.isWorkScatter ? 5 : vis.enrollmentScale(d[vis.sizer]);
+            return !vis.isWorkScatter ? (d.name === vis.selectedWord ? 8 : 5) : vis.enrollmentScale(d[vis.sizer]);
         })
-      .merge(vis.dot)
+      // .merge(vis.dot)
         .attr("cx", function(d){
             return vis.x(d[vis.metricX]);
         })
-        .attr("cy", function(d){ return vis.y(d[vis.metricY]); })
+        .attr("cy", function(d){
+            return vis.y(d[vis.metricY]);
+        })
         .style("fill", function(d) {
             if(vis.isWorkScatter){
                 return vis.color(vis.categories[d.department].category);
@@ -211,17 +238,17 @@ Scatter.prototype.updateVis = function(){
             }
 
         })
-      .style("opacity", 0.6)
-        .on("mouseover", tool_tip.show)
-          .on("mouseout", tool_tip.hide)
+      .style("opacity", function(d){
+          return (d.name === vis.selectedWord ? 1 : .6)
+      })
+        .on("mouseover", vis.tool_tip.show)
+          .on("mouseout", vis.tool_tip.hide)
         .on("click", function(d){
-          $("#scatter .dot").css("opacity", 0.6).attr("r", 5);
-          this.style.opacity = 1;
-          this.setAttribute("r", 8);
-          myhistogram.updateKey(d.name); // Adjust histogram below
+            vis.selectWord(d.name);
+          myhistogram.updateKey(d.name, vis.color(d.category)); // Adjust histogram below
         });
 
-    vis.dot.exit().remove();
+    // setTimeout(vis.selectWord, 200);
 
     vis.label = vis.svg.selectAll(".label")
         .data(vis.labelStatus === "true" ? vis.displayData : []);
@@ -280,4 +307,5 @@ Scatter.prototype.updateVis = function(){
 
         vis.legendText.exit().remove();
     }
+
 };

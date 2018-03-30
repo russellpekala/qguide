@@ -34,13 +34,7 @@ function makeScatterData(raw_data, categories){
 }
 
 d3.json("data/cdf_data.json", function(data){
-  var labels = {
-    "x": 'Word',
-    "y": 'Cumulative Frequency',
-    "title": 'Cumulative Distribution of Words'
-  };
-  wordcloud = new WordCloud('wordcloud', data, labels);
-  // cdf = new Cdf('cdf', data, labels);
+  wordcloud = new WordCloud('wordcloud', data, {});
 });
 
 d3.json("constants/conventions.json", function(conventions){
@@ -61,7 +55,7 @@ d3.json("constants/categories.json", function(categories){
         enrollmentHistogram = new Histogram('enrollment', data, 'MATH', {x: 'Enrollment Size', y: 'Number of Classes'}, 150, numTicks=30, size={
             width: 500,
             height: 350,
-            margin: { top: 40, right: 50, bottom: 60, left: 120 }
+            margin: { top: 40, right: 50, bottom: 30, left: 120 }
         }, _categories=categories);
     });
 
@@ -69,8 +63,9 @@ d3.json("constants/categories.json", function(categories){
         var histogramLabels = {
             "y": 'Frequency'
         };
-        d3.json("data/word_categories.json", function(wordCategories){
+        d3.json("constants/word_categories.json", function(wordCategories){
             var scatterData = makeScatterData(data, wordCategories);
+            console.log(scatterData);
             myscatter = new Scatter('scatter', scatterData, 'workload', 'frequency', {"y": 'Frequency'}, _size={
                 width: 700,
                 height: 200,
@@ -94,20 +89,31 @@ d3.json("constants/categories.json", function(categories){
     });
 
     d3.json("data/correlations.json", function(correlations){
-        histogramLineup = new LineUp('work-lineup', correlations, null, labels={top: "Likes to Work", bottom: "Avoids Work"}, size={
-            width: 200,
+        workLineupF = new LineUpFocus('work-lineupf', correlations, null, _labels={top: "Likes to Work", bottom: "Avoids Work"}, _size={
+            width: 80,
             height: 350,
-            margin: { top: 40, right: 100, bottom: 60, left: 50 }
-        }, _categories=categories);
+            margin: { top: 40, right: 0, bottom: 30, left: 40 },
+        },_categories=categories, _isWorkLineUp=true);
+        workLineupC = new LineUpContext('work-lineupc', correlations, null, labels={top: "Likes to Work", bottom: "Avoids Work"}, size={
+            width: 185,
+            height: 350,
+            margin: { top: 40, right: 110, bottom: 30, left: 40 },
+        }, _categories=categories, _isWorkLineUp=true);
     });
 
     d3.json("data/median_student.json", function(medianStudent){
         d3.json("data/median.json", function(median){
-            histogramLineup = new LineUp('histogram-lineup', medianStudent, median, labels={top: "Big Class Sizes", bottom: "Small Class Sizes"}, size={
-                width: 200,
+            histogramLineupF = new LineUpFocus('histogram-lineupf', medianStudent, median, labels={top: "Big Class Sizes", bottom: "Small Class Sizes"}, size={
+                width: 80,
                 height: 350,
-                margin: { top: 40, right: 100, bottom: 60, left: 50 }
-            }, _categories=categories);
+                margin: { top: 40, right: 0, bottom: 30, left: 40 },
+            }, _categories=categories, _isWorkLineUp=false);
+
+            histogramLineupC = new LineUpContext('histogram-lineupc', medianStudent, median, labels={top: "Big Class Sizes", bottom: "Small Class Sizes"}, size={
+                width: 185,
+                height: 350,
+                margin: { top: 40, right: 110, bottom: 30, left: 40 },
+            }, _categories=categories, _isWorkLineUp=false);
         })
     });
 
@@ -117,10 +123,31 @@ d3.json("constants/categories.json", function(categories){
         workScatter = new Scatter('work-scatter', data, 'Workload', 'Overall', labels={x: "Workload", y: "Rating"}, size={
             width: 500,
             height: 350,
-            margin: { top: 40, right: 50, bottom: 60, left: 120 }
+            margin: { top: 40, right: 50, bottom: 30, left: 120 }
         }, _isWorkScatter=true, categories);
     });
 
 });
 
 
+function brushedEnrollment() {
+    // Get the extent of the current brush
+    var selectionRange = d3.brushSelection(d3.select("#histogram-lineupc .brush").node());
+    // Convert the extent into the corresponding domain values
+    var selectionDomain = selectionRange.map(histogramLineupC.y.invert);
+    selectionDomain.reverse();
+    histogramLineupF.y.domain(selectionDomain);
+    // Update focus chart (detailed information)
+    histogramLineupF.updateVis();
+}
+
+function brushedWorkload() {
+    // Get the extent of the current brush
+    var selectionRange = d3.brushSelection(d3.select("#work-lineupc .brush").node());
+    // Convert the extent into the corresponding domain values
+    var selectionDomain = selectionRange.map(workLineupC.y.invert);
+    selectionDomain.reverse();
+    workLineupF.y.domain(selectionDomain);
+    // Update focus chart (detailed information)
+    workLineupF.updateVis();
+}

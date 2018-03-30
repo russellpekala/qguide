@@ -58,7 +58,7 @@ Histogram.prototype.initVis = function(){
   vis.wrangleData();
 };
 
-Histogram.prototype.updateKey = function(newKey){
+Histogram.prototype.updateKey = function(newKey, newCat){
   var vis = this;
 
   if (newKey === undefined){
@@ -67,6 +67,8 @@ Histogram.prototype.updateKey = function(newKey){
   else {
     vis.key = newKey;
   }
+
+  vis.cat = newCat;
 
   vis.wrangleData();
 };
@@ -159,9 +161,9 @@ Histogram.prototype.updateVis = function(){
       return vis.height - vis.y(d[vis.view]);
     })
     .style("fill", function(d) {
-      console.log(vis.key);
-        return vis.color(vis.categories[vis.key].category);
+        return vis.cat;
     })
+      .style("opacity", 0.6)
     .attr("width", widthvar * (1 - vis.padding));
 
   vis.xAxis = d3.axisBottom(vis.x);

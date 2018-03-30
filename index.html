@@ -70,8 +70,36 @@
             <option value="Overall">Overall Rating</option>
         </select>
         <select onchange="stdevList.wrangleData()" class="selectpicker" id="department-select2">
-            <option value="MATH">Math</option>
+            <option value="AESTHINT">Aesth. & Int.</option>
+            <option value="AFRAMER">Af. Am. Studies</option>
+            <option value="ANTHRO">Anthropology</option>
+            <option value="APMTH">Ap. Math</option>
+            <option value="CHEM">Chemistry</option>
+            <option value="COMPSCI">Comp. Sci.</option>
+            <option value="CULTBLF">Cult. & Belief</option>
+            <option value="ECON">Economics</option>
+            <option value="ENG-SCI">Eng. Sci.</option>
+            <option value="ENGLISH">English</option>
+            <option value="ETHRSON">Eth. Reasoning</option>
+            <option value="EXPOS">Expos. Writing</option>
+            <option value="FRSEMR">Freshman Seminar</option>
+            <option value="GOV">Government</option>
             <option value="HIST">History</option>
+            <option value="HISTSCI">Hist. of Sci.</option>
+            <option value="LIFESCI">Life Science</option>
+            <option value="MATH">Mathematics</option>
+            <option value="MCB">MCB</option>
+            <option value="MUSIC">Music</option>
+            <option value="PHYSCI">Phys. Sci.</option>
+            <option value="PHYSICS">Physics</option>
+            <option value="PSY">Psychology</option>
+            <option value="SCILIVSY">Sci. Living Systems</option>
+            <option value="SCIPHUNV">Sci. Physical Univ.</option>
+            <option value="SOCIOL">Sociology</option>
+            <option value="SOCWORLD">Soc's of the World</option>
+            <option value="SPANSH">Spanish</option>
+            <option value="STAT">Statistics</option>
+            <option value="US-WORLD">US in the World</option>
         </select>
         <select onchange="stdevList.wrangleData()" class="selectpicker" id="order-select2">
             <option value="-1">Least to Greatest</option>
@@ -96,43 +124,137 @@
         </p>
 
         <h2> What's class like?</h2>
-        <select onchange="enrollmentHistogram.updateKey()" class="selectpicker" id="enrollment-select">
-            <option value="MATH">Math</option>
-            <option value="HIST">History</option>
-        </select>
-        <select onchange="enrollmentHistogram.updateView()" class="selectpicker" id="view-select">
-            <option value="length">Class Level</option>
-            <option value="val">Student Level</option>
-        </select>
-        <div class="row side-by-side">
-            <div id="enrollment"></div>
-            <div id="histogram-lineup"></div>
+        <div class="col-md-12">
+            <div class="row text-center" style="margin:auto;">
+                <p class="top-label-chart"> This is the 2011-2017 aggregated enrollment histogram for
+                    <select onchange="enrollmentHistogram.updateKey()" class="selectpicker" id="enrollment-select">
+                        <option value="AESTHINT">Aesth. & Int.</option>
+                        <option value="AFRAMER">Af. Am. Studies</option>
+                        <option value="ANTHRO">Anthropology</option>
+                        <option value="APMTH">Ap. Math</option>
+                        <option value="CHEM">Chemistry</option>
+                        <option value="COMPSCI">Comp. Sci.</option>
+                        <option value="CULTBLF">Cult. & Belief</option>
+                        <option value="ECON">Economics</option>
+                        <option value="ENG-SCI">Eng. Sci.</option>
+                        <option value="ENGLISH">English</option>
+                        <option value="ETHRSON">Eth. Reasoning</option>
+                        <option value="EXPOS">Expos. Writing</option>
+                        <option value="FRSEMR">Freshman Seminar</option>
+                        <option value="GOV">Government</option>
+                        <option value="HIST">History</option>
+                        <option value="HISTSCI">Hist. of Sci.</option>
+                        <option value="LIFESCI">Life Science</option>
+                        <option value="MATH">Mathematics</option>
+                        <option value="MCB">MCB</option>
+                        <option value="MUSIC">Music</option>
+                        <option value="PHYSCI">Phys. Sci.</option>
+                        <option value="PHYSICS">Physics</option>
+                        <option value="PSY">Psychology</option>
+                        <option value="SCILIVSY">Sci. Living Systems</option>
+                        <option value="SCIPHUNV">Sci. Physical Univ.</option>
+                        <option value="SOCIOL">Sociology</option>
+                        <option value="SOCWORLD">Soc's of the World</option>
+                        <option value="SPANSH">Spanish</option>
+                        <option value="STAT">Statistics</option>
+                        <option value="US-WORLD">US in the World</option>
+                    </select>, using a
+                    <select onchange="enrollmentHistogram.updateView()" class="selectpicker" id="view-select">
+                        <option value="length">Class Level</option>
+                        <option value="val">Student Level</option>
+                    </select> perspective<sup>1</sup>.
+                </p>
+            </div>
+            <div class="row side-by-side">
+                <div id="enrollment"></div>
+                <div id="histogram-lineupf"></div>
+                <div id="histogram-lineupc"></div>
+            </div>
+            <div class="row text-center" style="margin:auto;">
+                <p style="font-size: 10px;"><sup>1</sup> The student level median is the typical class size that a student would
+                    expect to be enrolled in.  The class level median is the typical class size that a professor would expect
+                    their class to be.
+                </p>
+            </div>
+
         </div>
 
+
+
         <h2> Who likes to work the most?  </h2>
-        <select onchange="workScatter.updateDept()" class="selectpicker" id="department-select">
-            <option value="MATH">Math</option>
-            <option value="HIST">History</option>
-            <option value="AESTHINT">Aesthetic and Interpretive</option>
-        </select>
-        <select onchange="workScatter.wrangleData()" class="selectpicker" id="update-term">
-            <option value="2017_spring">Spring 2017</option>
-            <option value="2016_fall">Fall 2016</option>
-            <option value="2016_spring">Spring 2016</option>
-            <option value="2015_fall">Fall 2015</option>
-            <option value="2015_spring">Spring 2015</option>
-            <option value="2014_fall">Fall 2014</option>
-            <option value="2014_spring">Spring 2014</option>
-            <option value="2013_fall">Fall 2013</option>
-            <option value="2013_spring">Spring 2013</option>
-            <option value="2012_fall">Fall 2012</option>
-            <option value="2012_spring">Spring 2012</option>
-            <option value="2011_fall">Fall 2011</option>
-        </select>
-        <div class="row side-by-side">
-            <div id="work-scatter"></div>
-            <div id="work-lineup"></div>
+        <p>
+            A strong pattern emerges when we look at workload versus course rating: In STEM fields, workload correlates
+            negatively with course rating.  The best STEM classes are those that require the least work.  At the other end
+            of the spectrum, general education classes are actually rated higher when they have higher workloads.  Other
+            areas were rated somewhat in the middle: workload wasn't as great a predictor of overall course rating.
+        </p>
+        <div class="col-md-12">
+            <div class="row text-center" style="margin:auto;">
+                <p class="top-label-chart"> The scatter shows course data from
+                    <select onchange="workScatter.updateDept()" class="selectpicker" id="department-select">
+                        <option value="AESTHINT">Aesth. & Int.</option>
+                        <option value="AFRAMER">Af. Am. Studies</option>
+                        <option value="ANTHRO">Anthropology</option>
+                        <option value="APMTH">Ap. Math</option>
+                        <option value="CHEM">Chemistry</option>
+                        <option value="COMPSCI">Comp. Sci.</option>
+                        <option value="CULTBLF">Cult. & Belief</option>
+                        <option value="ECON">Economics</option>
+                        <option value="ENG-SCI">Eng. Sci.</option>
+                        <option value="ENGLISH">English</option>
+                        <option value="ETHRSON">Eth. Reasoning</option>
+                        <option value="EXPOS">Expos. Writing</option>
+                        <option value="FRSEMR">Freshman Seminar</option>
+                        <option value="GOV">Government</option>
+                        <option value="HIST">History</option>
+                        <option value="HISTSCI">Hist. of Sci.</option>
+                        <option value="LIFESCI">Life Science</option>
+                        <option value="MATH">Mathematics</option>
+                        <option value="MCB">MCB</option>
+                        <option value="MUSIC">Music</option>
+                        <option value="PHYSCI">Phys. Sci.</option>
+                        <option value="PHYSICS">Physics</option>
+                        <option value="PSY">Psychology</option>
+                        <option value="SCILIVSY">Sci. Living Systems</option>
+                        <option value="SCIPHUNV">Sci. Physical Univ.</option>
+                        <option value="SOCIOL">Sociology</option>
+                        <option value="SOCWORLD">Soc's of the World</option>
+                        <option value="SPANSH">Spanish</option>
+                        <option value="STAT">Statistics</option>
+                        <option value="US-WORLD">US in the World</option>
+                    </select> classes in
+                    <select onchange="workScatter.wrangleData()" class="selectpicker" id="update-term">
+                        <option value="2017_spring">Spring 2017</option>
+                        <option value="2016_fall">Fall 2016</option>
+                        <option value="2016_spring">Spring 2016</option>
+                        <option value="2015_fall">Fall 2015</option>
+                        <option value="2015_spring">Spring 2015</option>
+                        <option value="2014_fall">Fall 2014</option>
+                        <option value="2014_spring">Spring 2014</option>
+                        <option value="2013_fall">Fall 2013</option>
+                        <option value="2013_spring">Spring 2013</option>
+                        <option value="2012_fall">Fall 2012</option>
+                        <option value="2012_spring">Spring 2012</option>
+                        <option value="2011_fall">Fall 2011</option>
+                    </select>.
+                </p>
+            </div>
+            <div class="row side-by-side">
+                <div id="work-scatter"></div>
+                <div id="work-lineupf"></div>
+                <div id="work-lineupc"></div>
+            </div>
+            <div class="row text-center" style="margin:auto;">
+                <p style="font-size: 10px;"><sup>*</sup> The scatter dots representing courses are sized by enrollment.
+                </p>
+            </div>
         </div>
+
+
+        <h2> Starting to Look at Language </h2>
+        <p> Perhaps the most valuable information to consult in the Q Guide is the comments.  Comments are valuable
+            because they allow for specific anecdotes, associations, and comparisons.  We can get a taste of this
+            value by simply looking at how </p>
 
         <h3>Comments frequency Plot Sortable by term/department. </h3>
         <select onchange="wordcloud.wrangleData()" id="select-wordcloud" class="selectpicker">
@@ -141,8 +263,36 @@
                 <option value="fall_2016">Fall 2016</option>
             </optgroup>
             <optgroup label="Department">
-                <option value="MATH">Math</option>
+                <option value="AESTHINT">Aesth. & Int.</option>
+                <option value="AFRAMER">Af. Am. Studies</option>
+                <option value="ANTHRO">Anthropology</option>
+                <option value="APMTH">Ap. Math</option>
+                <option value="CHEM">Chemistry</option>
+                <option value="COMPSCI">Comp. Sci.</option>
+                <option value="CULTBLF">Cult. & Belief</option>
+                <option value="ECON">Economics</option>
+                <option value="ENG-SCI">Eng. Sci.</option>
+                <option value="ENGLISH">English</option>
+                <option value="ETHRSON">Eth. Reasoning</option>
+                <option value="EXPOS">Expos. Writing</option>
+                <option value="FRSEMR">Freshman Seminar</option>
+                <option value="GOV">Government</option>
                 <option value="HIST">History</option>
+                <option value="HISTSCI">Hist. of Sci.</option>
+                <option value="LIFESCI">Life Science</option>
+                <option value="MATH">Mathematics</option>
+                <option value="MCB">MCB</option>
+                <option value="MUSIC">Music</option>
+                <option value="PHYSCI">Phys. Sci.</option>
+                <option value="PHYSICS">Physics</option>
+                <option value="PSY">Psychology</option>
+                <option value="SCILIVSY">Sci. Living Systems</option>
+                <option value="SCIPHUNV">Sci. Physical Univ.</option>
+                <option value="SOCIOL">Sociology</option>
+                <option value="SOCWORLD">Soc's of the World</option>
+                <option value="SPANSH">Spanish</option>
+                <option value="STAT">Statistics</option>
+                <option value="US-WORLD">US in the World</option>
             </optgroup>
         </select>
 
@@ -159,18 +309,6 @@
         </select>
         <div id="scatter"></div>
         <div id="histogram"></div>
-
-
-
-        <!--<div id="sort-methods">-->
-        <!--<p>Sort Methods: </p>-->
-        <!--<button class="button2 hvr-fade2" onClick="resort(final_departments, 'name')">Alphabetical</button>-->
-        <!--<button id="median" class="button2 hvr-fade2" onClick="resort(final_departments, 'median')">Median</button>-->
-        <!--<button class="button2 hvr-fade2" onClick="resort(final_departments, 'mean')">Mean</button>-->
-        <!--<button class="button2 hvr-fade2" onClick="resort(final_departments,'median_student')">Median Student</button>-->
-        <!--<button id="total_enrollment" class="button2 hvr-fade2" onClick="resort(final_departments,'total_enrollment')">Total Enrollment</button>-->
-        <!--</div>-->
-        <!--<div id="button1"></div>-->
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -185,8 +323,10 @@
     <script src="js/cdf.js"></script>
     <script src="js/stdevlist.js"></script>
     <script src="js/wordcloud.js"></script>
-    <script src="js/lineup.js"></script>
+    <!--<script src="js/lineup.js"></script>-->
     <script src="js/area.js"></script>
+    <script src="js/lineupfocus.js"></script>
+    <script src="js/lineupcontext.js"></script>
 
     <script src="js/main.js"></script>
 

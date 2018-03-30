@@ -5,5 +5,5 @@
     "interest": ["boring", "interesting", "inspiration"],
     "demeanor": ["serious", "joke", "funny", "strange"],
     "time": ["morning", "midnight", "afternoon", "evening", "lunch", "dinner"],
-    "slang": ["gem", "pset", "TF"]
+    "slang": ["gem", "pset", "tf"]
 }

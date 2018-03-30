@@ -25,6 +25,11 @@ p, ol {
     text-align: left;
 }
 
+.top-label-chart {
+    text-align: center;
+    margin: auto;
+}
+
 th {
     background-color: crimson;
 }
