@@ -1,5 +1,6 @@
 StdevList = function(_parentElement, _data, _department, _year, _classSizeRange){
-
+  var vis = this;
+  
   this.parentElement = _parentElement;
   this.data = _data;
   this.classSizeRange = _classSizeRange; // What class sizes to consider.
