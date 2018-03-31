@@ -49,7 +49,7 @@ Barchart.prototype.initVis = function(){
 
   vis.yAxis = d3.axisLeft(vis.y);
 
-  vis.numSelected = 15;
+  vis.numSelected = 30;
 };
 
 Barchart.prototype.wrangleData = function(){
@@ -57,17 +57,6 @@ Barchart.prototype.wrangleData = function(){
   vis.displayData = vis.data.filter(function(d){ return d.year == vis.year; }).slice(0, vis.numSelected - 1);
 
   vis.sort();
-};
-
-Barchart.prototype.changeNumSelected = function(){
-    var vis = this;
-    d3.selectAll("#barchart .bar").remove();
-    // d3.selectAll("#barchart.subre").remove();
-    d3.selectAll("#barchart .y-axis").remove();
-
-    vis.numSelected = $('#num-select').val();
-
-    vis.wrangleData();
 };
 
 Barchart.prototype.changeYear = function(){

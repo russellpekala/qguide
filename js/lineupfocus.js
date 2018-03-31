@@ -69,7 +69,7 @@ LineUpFocus.prototype.initVis = function(){
     vis.tool_tip = d3.tip()
         .attr("class", "d3-tip")
         .offset([-8, 0])
-        .html(function(d) { return d.name + ": " + d.value; });
+        .html(function(d) { return d.name + ": " + d3.format(".3f")(d.value); }); // 3 decimal places
 
     vis.wrangleData();
 };
@@ -97,8 +97,6 @@ LineUpFocus.prototype.updateVis = function(){
     vis.svg.call(vis.tool_tip);
     vis.svg.selectAll(".axis-label").remove();
 
-    console.log(vis.isWorkLineUp);
-
     vis.yAxis = d3.axisLeft(vis.y);
 
     vis.svg.select(".axis--y")
@@ -125,13 +123,11 @@ LineUpFocus.prototype.updateVis = function(){
         .on("mouseover", vis.tool_tip.show)
         .on("mouseout", vis.tool_tip.hide)
         .on("click", function(d){
-            console.log(d);
             if(!vis.isWorkLineUp){
                 $("#enrollment-select").val(d.name);
                 enrollmentHistogram.updateKey(d.name, vis.color(vis.categories[d.name].category));
             }
             else {
-                console.log('in else')
                 $("#department-select").val(d.name);
                 workScatter.updateDept();
             }
@@ -151,5 +147,11 @@ LineUpFocus.prototype.updateVis = function(){
         .attr('text-anchor', 'middle')
         .attr('transform', "translate(-0, " + (- 20) + ")")
         .text(vis.labels.top);
+
+    vis.svg.append('text')
+        .attr('class', 'axis-label')
+        .attr('text-anchor', 'middle')
+        .attr('transform', "translate(-32," + (vis.height/2) + ")rotate(-90)")
+        .text(vis.labels.left);
 
 };

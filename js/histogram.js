@@ -1,7 +1,7 @@
 
 var parse = d3.format(".2s");
 
-Histogram = function(_parentElement, _data, _startKey, _labels, _maxX, _numTicks, _size, _categories){
+Histogram = function(_parentElement, _isEnrollmentHistogram, _data, _startKey, _labels, _maxX, _numTicks, _size, _categories){
   var vis = this;
 
   vis.parentElement = _parentElement;
@@ -14,6 +14,7 @@ Histogram = function(_parentElement, _data, _startKey, _labels, _maxX, _numTicks
   vis.size = _size;
   vis.view = "length";
   vis.categories = _categories;
+  vis.isEnrollmentHistogram = _isEnrollmentHistogram;
 
   vis.initVis();
 };
@@ -73,16 +74,11 @@ Histogram.prototype.updateKey = function(newKey, newCat){
   vis.wrangleData();
 };
 
-Histogram.prototype.updateView = function(newView){
-    var vis = this;
-
-    vis.view = $("#view-select").val();
-
-    vis.wrangleData();
-};
-
 Histogram.prototype.wrangleData = function(){
   var vis = this;
+
+  vis.metric = $("#metric-select-scatter").val();
+  vis.view = $("#view-select").val();
 
   if (vis.key === "nothing"){
     vis.displayData = [];
@@ -94,7 +90,12 @@ Histogram.prototype.wrangleData = function(){
         .text("Click a dot");
   }
   else {
-    vis.displayData = vis.data[vis.key]
+    if (vis.isEnrollmentHistogram){
+        vis.displayData = vis.data[vis.key];
+    }
+    else {
+        vis.displayData = vis.data[vis.metric][vis.key];
+    }
   }
 
   vis.displayData.forEach(function(d, i){
@@ -146,7 +147,7 @@ Histogram.prototype.updateVis = function(){
   var widthvar = vis.key === "nothing" ? 0 : (vis.x(vis.bins[0].x1) - vis.x(vis.bins[0].x0));
 
   vis.bar = vis.svg.selectAll(".bar").data(vis.binUp);
-  vis.bar = vis.bar.enter().append("rect")
+  vis.bar.enter().append("rect")
     .merge(vis.bar)
       .transition()
       .duration(500)
@@ -165,6 +166,8 @@ Histogram.prototype.updateVis = function(){
     })
       .style("opacity", 0.6)
     .attr("width", widthvar * (1 - vis.padding));
+
+  vis.bar.exit().remove();
 
   vis.xAxis = d3.axisBottom(vis.x);
   vis.yAxis = d3.axisLeft(vis.y).tickFormat(parse);

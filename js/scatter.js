@@ -1,4 +1,4 @@
-Scatter = function(_parentElement, _data, _metricX, _metricY, _labels, _size, _isWorkScatter, _categories){
+Scatter = function(_customScales, _parentElement, _data, _metricX, _metricY, _labels, _size, _isWorkScatter, _categories){
     var vis = this;
 
   this.parentElement = _parentElement;
@@ -12,10 +12,10 @@ Scatter = function(_parentElement, _data, _metricX, _metricY, _labels, _size, _i
   this.isWorkScatter = _isWorkScatter;
   this.department = "MATH";
   this.categories = _categories;
+  this.customScales = _customScales;
 
   vis.toolTip = _isWorkScatter ? "Course" : "name";
   vis.selectedWord = null;
-  console.log(vis.categories);
 
   this.initVis();
 };
@@ -73,7 +73,7 @@ Scatter.prototype.initVis = function(){
     vis.tool_tip = d3.tip()
         .attr("class", "d3-tip")
         .offset([-8, 0])
-        .html(function(d) { console.log('scatter', d); return d[vis.toolTip]; });
+        .html(function(d) { return d[vis.toolTip]; });
 
   vis.wrangleData();
 };
@@ -117,9 +117,9 @@ Scatter.prototype.labelChange = function(){
     vis.wrangleData();
 };
 
-Scatter.prototype.metricChangeY = function(){
+Scatter.prototype.metricChangeX = function(){
     var vis = this;
-    vis.metricY = $("#metric-select-scatter").val();
+    vis.metricX = $("#metric-select-scatter").val();
     vis.wrangleData();
 };
 
@@ -148,17 +148,11 @@ Scatter.prototype.updateDept = function(){
 Scatter.prototype.selectWord = function(word){
     var vis = this;
 
-    console.log('select word called');
     if (word){
-        console.log("setting selected word to ", word);
         vis.selectedWord = word;
     }
-    console.log(vis.selectedWord);
-
     $("#scatter .dot").css("opacity", 0.6).attr("r", 5);
     if (!!vis.selectedWord) {
-        console.log('changing size of ', vis.selectedWord);
-        console.log($("#" + word));
         $("#" + word).css("opacity", 1).attr("r", 8);
     }
 };
@@ -175,6 +169,7 @@ Scatter.prototype.updateVis = function(){
       return d[vis.metricY];
   })]);
 
+
   if (vis.isWorkScatter){
       vis.y.domain([2, 5]); // Approx domain for rating.
       vis.x.domain([0, d3.max(vis.displayData, function(d){
@@ -185,7 +180,7 @@ Scatter.prototype.updateVis = function(){
       }));
   }
   else {
-      vis.x.domain([0, 10]); // Approx domain for workload.
+      vis.x.domain(vis.customScales[vis.metricX]);
   }
 
   vis.xAxis = d3.axisBottom(vis.x);
@@ -227,6 +222,7 @@ Scatter.prototype.updateVis = function(){
             return vis.x(d[vis.metricX]);
         })
         .attr("cy", function(d){
+
             return vis.y(d[vis.metricY]);
         })
         .style("fill", function(d) {

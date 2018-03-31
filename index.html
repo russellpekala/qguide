@@ -32,10 +32,6 @@
         </p>
 
         <h3>Barchart for Course Ratings by Department</h3>
-        <select onchange="barchart.changeNumSelected()" class="selectpicker" id="num-select">
-            <option value=15>Show Top 15 Most Popular</option>
-            <option value=30>Show Top 30 Most Popular</option>
-        </select>
         <select onchange="barchart.changeYear()" class="selectpicker" id="year-select">
             <option value=2017>2017</option>
             <option value=2016>2016</option>
@@ -159,7 +155,7 @@
                         <option value="STAT">Statistics</option>
                         <option value="US-WORLD">US in the World</option>
                     </select>, using a
-                    <select onchange="enrollmentHistogram.updateView()" class="selectpicker" id="view-select">
+                    <select onchange="enrollmentHistogram.wrangleData()" class="selectpicker" id="view-select">
                         <option value="length">Class Level</option>
                         <option value="val">Student Level</option>
                     </select> perspective<sup>1</sup>.
@@ -257,58 +253,81 @@
             value by simply looking at how </p>
 
         <h3>Comments frequency Plot Sortable by term/department. </h3>
-        <select onchange="wordcloud.wrangleData()" id="select-wordcloud" class="selectpicker">
-            <optgroup label="Term">
-                <option value="spring_2017">Spring 2017</option>
-                <option value="fall_2016">Fall 2016</option>
-            </optgroup>
-            <optgroup label="Department">
-                <option value="AESTHINT">Aesth. & Int.</option>
-                <option value="AFRAMER">Af. Am. Studies</option>
-                <option value="ANTHRO">Anthropology</option>
-                <option value="APMTH">Ap. Math</option>
-                <option value="CHEM">Chemistry</option>
-                <option value="COMPSCI">Comp. Sci.</option>
-                <option value="CULTBLF">Cult. & Belief</option>
-                <option value="ECON">Economics</option>
-                <option value="ENG-SCI">Eng. Sci.</option>
-                <option value="ENGLISH">English</option>
-                <option value="ETHRSON">Eth. Reasoning</option>
-                <option value="EXPOS">Expos. Writing</option>
-                <option value="FRSEMR">Freshman Seminar</option>
-                <option value="GOV">Government</option>
-                <option value="HIST">History</option>
-                <option value="HISTSCI">Hist. of Sci.</option>
-                <option value="LIFESCI">Life Science</option>
-                <option value="MATH">Mathematics</option>
-                <option value="MCB">MCB</option>
-                <option value="MUSIC">Music</option>
-                <option value="PHYSCI">Phys. Sci.</option>
-                <option value="PHYSICS">Physics</option>
-                <option value="PSY">Psychology</option>
-                <option value="SCILIVSY">Sci. Living Systems</option>
-                <option value="SCIPHUNV">Sci. Physical Univ.</option>
-                <option value="SOCIOL">Sociology</option>
-                <option value="SOCWORLD">Soc's of the World</option>
-                <option value="SPANSH">Spanish</option>
-                <option value="STAT">Statistics</option>
-                <option value="US-WORLD">US in the World</option>
-            </optgroup>
-        </select>
-
-        <div id="wordcloud"></div>
+        <div class="col-md-12">
+            <div class="row text-center" style="margin:auto;">
+                <p class="top-label-chart"> The scatter shows the word distribution of comments about
+                    <select onchange="wordcloud.wrangleData()" id="select-wordcloud" class="selectpicker">
+                        <optgroup label="Term">
+                            <option value="spring_2017">Spring 2017</option>
+                            <option value="fall_2016">Fall 2016</option>
+                        </optgroup>
+                        <optgroup label="Department">
+                            <option value="AESTHINT">Aesth. & Int.</option>
+                            <option value="AFRAMER">Af. Am. Studies</option>
+                            <option value="ANTHRO">Anthropology</option>
+                            <option value="APMTH">Ap. Math</option>
+                            <option value="CHEM">Chemistry</option>
+                            <option value="COMPSCI">Comp. Sci.</option>
+                            <option value="CULTBLF">Cult. & Belief</option>
+                            <option value="ECON">Economics</option>
+                            <option value="ENG-SCI">Eng. Sci.</option>
+                            <option value="ENGLISH">English</option>
+                            <option value="ETHRSON">Eth. Reasoning</option>
+                            <option value="EXPOS">Expos. Writing</option>
+                            <option value="FRSEMR">Freshman Seminar</option>
+                            <option value="GOV">Government</option>
+                            <option value="HIST">History</option>
+                            <option value="HISTSCI">Hist. of Sci.</option>
+                            <option value="LIFESCI">Life Science</option>
+                            <option value="MATH">Mathematics</option>
+                            <option value="MCB">MCB</option>
+                            <option value="MUSIC">Music</option>
+                            <option value="PHYSCI">Phys. Sci.</option>
+                            <option value="PHYSICS">Physics</option>
+                            <option value="PSY">Psychology</option>
+                            <option value="SCILIVSY">Sci. Living Systems</option>
+                            <option value="SCIPHUNV">Sci. Physical Univ.</option>
+                            <option value="SOCIOL">Sociology</option>
+                            <option value="SOCWORLD">Soc's of the World</option>
+                            <option value="SPANSH">Spanish</option>
+                            <option value="STAT">Statistics</option>
+                            <option value="US-WORLD">US in the World</option>
+                        </optgroup>
+                    </select> classes.  You can selectively decide whether to
+                    <select onchange="wordcloud.wrangleData();" class="selectpicker" id="boring-select">
+                        <option value="all">include boring words</option>
+                        <option value="interesting">not include boring words</option>
+                    </select>.
+                </p>
+            </div>
+            <div id="wordcloud"></div>
+            <div class="row text-center" style="margin:auto;">
+                <p style="font-size: 10px;"><sup>*</sup> A list of the boring words, along with everything else used in the project, is on my github.
+                </p>
+            </div>
+        </div>
 
         <h3>Course Workload and Comment Word Frequencies</h3>
-        <select onchange="myscatter.metricChangeY()" class="selectpicker" id="metric-select-scatter">
-            <option value="workload">Workload</option>
-            <option value="overall">Overall Rating</option>
-        </select>
-        <select onchange="myscatter.labelChange()" class="selectpicker" id="label-select">
-            <option value="false">Don't Show Labels</option>
-            <option value="true">Show Labels</option>
-        </select>
-        <div id="scatter"></div>
-        <div id="histogram"></div>
+        <div class="col-md-12">
+            <div class="row text-center" style="margin:auto;">
+                <p class="top-label-chart"> The scatter shows how certain words correlate with
+                    <select onchange="myscatter.metricChangeX(); myhistogram.wrangleData()" class="selectpicker" id="metric-select-scatter">
+                        <option value="workload">Workload</option>
+                        <option value="overall">Overall Rating</option>
+                    </select>.  Toggle whether you'd like
+                    <select onchange="myscatter.labelChange()" class="selectpicker" id="label-select">
+                        <option value="false">not to show labels</option>
+                        <option value="true">to show labels</option>
+                    </select>.  Interact with the legend to show different subcategories of words.
+                </p>
+            </div>
+            <div id="scatter"></div>
+            <div id="histogram"></div>
+            <div class="row text-center" style="margin:auto;">
+                <p style="font-size: 10px;"><sup>*</sup> This visualization uses data for all available semesters and all available courses.
+                </p>
+            </div>
+        </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
