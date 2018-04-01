@@ -6,7 +6,7 @@
                       {"min": 4, "max": 7, "label": "4-7 hours"},
                       {"min": 8, "max": 11, "label": "8-11 hours"},
                       {"min": 11, "max": 14, "label": "11-14 hours"},
-                      {"min": 11, "max": 17, "label": "14+"}],
+                      {"min": 11, "max": 17, "label": "14+ hours"}],
         "std_multiplier": 3,
         "respondents": "Course_Workload_Respondents"
     },

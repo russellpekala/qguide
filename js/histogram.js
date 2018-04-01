@@ -1,7 +1,7 @@
 
 var parse = d3.format(".2s");
 
-Histogram = function(_parentElement, _isEnrollmentHistogram, _data, _startKey, _labels, _maxX, _numTicks, _size, _categories){
+Histogram = function(_parentElement, _isEnrollmentHistogram, _data, _startKey, _labels, _maxX, _numTicks, _size, _categories, _customScales){
   var vis = this;
 
   vis.parentElement = _parentElement;
@@ -15,6 +15,7 @@ Histogram = function(_parentElement, _isEnrollmentHistogram, _data, _startKey, _
   vis.view = "length";
   vis.categories = _categories;
   vis.isEnrollmentHistogram = _isEnrollmentHistogram;
+  vis.customScales = _customScales;
 
   vis.initVis();
 };
@@ -102,7 +103,12 @@ Histogram.prototype.wrangleData = function(){
     vis.displayData[i] = Math.min(d, vis.maxX); // Truncate points.
   });
 
-  vis.x.domain([0, d3.max(vis.displayData, function(d){ return d; })]);
+  if (!vis.isEnrollmentHistogram){
+      vis.x.domain(vis.customScales[vis.metric]);
+  }
+  else {
+      vis.x.domain([0, d3.max(vis.displayData, function(d){ return d; })]);
+  }
 
   vis.bins = vis.key === "nothing" ? [] : d3.histogram()
     .domain(vis.x.domain())

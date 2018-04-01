@@ -1,10 +1,10 @@
-StdevList = function(_parentElement, _data, _department, _year, _classSizeRange){
+StdevList = function(_parentElement, _data, _color){
   var vis = this;
   
-  this.parentElement = _parentElement;
-  this.data = _data;
-  this.classSizeRange = _classSizeRange; // What class sizes to consider.
-  this.displayData = [];
+  vis.parentElement = _parentElement;
+  vis.data = _data;
+  vis.color = _color;
+  vis.pageSize = 10;
 
   this.initVis();
 };
@@ -12,27 +12,58 @@ StdevList = function(_parentElement, _data, _department, _year, _classSizeRange)
 StdevList.prototype.initVis = function() {
   var vis = this;
 
-  table = d3.select('#' + vis.parentElement).append('table');
-  headersTr = table.append('thead').append('tr');
-  tableBody = table.append('tbody');
+  vis.table = d3.select('#' + vis.parentElement).append('table');
+  vis.headersTr = vis.table.append('thead').append('tr');
+  vis.tableBody = vis.table.append('tbody');
+  vis.activePage = 0; // Initially zeroth page is active.
 
   vis.wrangleData();
 };
 
-StdevList.prototype.wrangleData = function(){
+StdevList.prototype.wrangleData = function(newActivePage){
   var vis = this;
+
+  var oldButtons = d3.selectAll(".page");
+  oldButtons.remove();
+
   vis.department = $('#department-select2').val();
   vis.metric = $('#metric-select2').val();
-  vis.year = $('#year-select2').val();
-  vis.term = $('#term-select2').val();
+    var v = $("#update-term2").val();
+    vis.term = v.split("_")[1];
+    vis.year = v.split("_")[0];
     vis.num = $('#num-select2').val();
     vis.sortOrder = $('#order-select2').val();
   
   vis.displayData = vis.data;
-  vis.displayData = vis.displayData.filter(function(d){
-    return ((d.department === vis.department) &
+    vis.displayData = vis.displayData.filter(function(d, i){
+        return ((d.department === vis.department) &
             (d.term === vis.term) &
             (d.year === vis.year));
+    });
+    for(var i = 0; i < Math.ceil(vis.displayData.length / vis.pageSize); i++){
+        var button = document.createElement("button");
+        button.innerHTML = (i * vis.pageSize + 1) + "-" + Math.min((i+1) * vis.pageSize, vis.displayData.length - 1);
+        button.id = "page" + i;
+        if (i===vis.activePage){
+            button.className = "active page";
+        }
+        else {
+            button.className = "page";
+        }
+        button.addEventListener("click", function(d){
+            vis.activePage = parseInt(d.target.id.substring(d.target.id.length-1));
+            vis.wrangleData();
+        });
+        correctDiv = document.getElementById("for-nav");
+        correctDiv.appendChild(button);
+    }
+
+  vis.displayData = vis.displayData.filter(function(d, i){
+    return ((d.department === vis.department) &
+            (d.term === vis.term) &
+            (d.year === vis.year) &
+            (i < (vis.activePage + 1) * vis.pageSize) &
+            (i >= (vis.activePage) * vis.pageSize));
   });
 
   // If truncating to popular classes, need to have this.
@@ -47,10 +78,10 @@ StdevList.prototype.wrangleData = function(){
 };
 
 function colspan(index){
-  if (index == 0){
+  if (index === 0){
     return 200;
   }
-  else if (index == 1){
+  else if (index === 1){
     return 100;
   }
   else {
@@ -60,7 +91,10 @@ function colspan(index){
 
 StdevList.prototype.updateVis = function(){
   var vis = this;
-  tableBody.selectAll("tr").remove();
+
+
+
+  vis.tableBody.selectAll("tr").remove();
 
   var titles = d3.keys(vis.data[0]).filter(function(d){
     return ((d !== 'department') &
@@ -69,18 +103,33 @@ StdevList.prototype.updateVis = function(){
             (d !== 'Workload') &
             (d !== 'Overall'));
   });
-  titles.push(vis.metric);
+  titles = titles.concat(["Overall", "Workload"]);
 
-  var headers = headersTr.selectAll('th').data(titles);
+    function hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    var v = hexToRgb(vis.color(vis.department));
+
+
+  var headers = vis.headersTr.selectAll('th').data(titles);
   headers = headers.enter().append('th')
       .attr("colspan", function(d, i) { return colspan(i); })
       .attr("class", function(d, i) { return 'col_' + i; })
     .merge(headers)
     .text(function (d){
       return d;
-    });
+    })
+      .style("background-color",  "rgba(" + v.r + "," + v.g + "," + v.b + "," + 0.6 + ")");
 
-  var rows = tableBody.selectAll('tr')
+    d3.select(".active").style("background-color", "rgba(" + v.r + "," + v.g + "," + v.b + "," + 0.6 + ")");
+
+  var rows = vis.tableBody.selectAll('tr')
     .data(vis.displayData).enter()
     .append('tr');
 

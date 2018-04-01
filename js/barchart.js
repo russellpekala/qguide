@@ -1,4 +1,4 @@
-Barchart = function(_parentElement, _data, _year, _metric, _metrics, _conventions){
+Barchart = function(_parentElement, _data, _year, _metric, _metrics, _conventions, _categories){
 
   this.parentElement = _parentElement;
   this.data = _data;
@@ -9,6 +9,7 @@ Barchart = function(_parentElement, _data, _year, _metric, _metrics, _convention
   this.displayData = [];
 
     // this.preprocess();
+    this.categories = _categories;
   this.initVis();
     this.preprocess();
     this.wrangleData();
@@ -45,16 +46,32 @@ Barchart.prototype.initVis = function(){
         .rangeRound([0, vis.widthRight]);
 
   vis.color = d3.scaleOrdinal()
-    .range(["#A80022", "#D8ADB6", "#F27991", "#992233", "#FFCCD6", "green", "blue"]);
+    .range([
+        "#FFCCD6",
+        "#D8ADB6",
+        "#F27991",
+        "#A80022",
+        "#992233",
+        "green",
+        "blue"]);
 
   vis.yAxis = d3.axisLeft(vis.y);
 
   vis.numSelected = 30;
+
+  vis.tool_tip = d3.tip()
+        .attr("class", "d3-tip")
+        .offset([-8, 0])
+        .html(function(d, i) { return (vis.categories[d.dept].name +
+                                    ": " + (d.name.substr(d.name.length - 3) === "var" ? d3.format(".1f") : d3.format(".0%"))
+                                            (d.x1 - d.x0)); } );
 };
 
 Barchart.prototype.wrangleData = function(){
   var vis = this;
-  vis.displayData = vis.data.filter(function(d){ return d.year == vis.year; }).slice(0, vis.numSelected - 1);
+  vis.displayData = vis.data.filter(function(d){
+    return (d.year == vis.year);
+  }).slice(0, vis.numSelected - 1);
 
   vis.sort();
 };
@@ -126,6 +143,7 @@ Barchart.prototype.sort = function(){
 Barchart.prototype.updateVis = function() {
   var vis = this;
 
+    vis.svg.call(vis.tool_tip);
   vis.svg.selectAll("text").remove();
 
   vis.xleft.domain([0, d3.max(vis.displayData, function(d) {
@@ -149,12 +167,23 @@ Barchart.prototype.updateVis = function() {
 
   vis.barLegend2 = vis.barLegend.enter().append("rect")
     .merge(vis.barLegend)
-    .attr("class", "legend")
+      .attr("class", function(d){ return "legend " + d; })
     .attr("x", function(d, i) { return vis.legendTab[i]; })
     .attr("y", -35)
     .attr("width", 18)
     .attr("height", 18)
-    .style("fill", vis.color);
+      .style("stroke-width", 2)
+      .style("stroke", "#000000")
+      .style("opacity", 0.6)
+    .style("fill", vis.color)
+      .on("mouseover", function(d){
+        var subbarsOfThisCategory = d3.selectAll("." + d);
+        subbarsOfThisCategory.style("opacity", 1);
+      })
+      .on("mouseout", function(d){
+          var subbarsOfThisCategory = d3.selectAll("." + d);
+          subbarsOfThisCategory.style("opacity", 0.6);
+      });
 
   vis.barLegendText = vis.barLegend;
   vis.barLegendText = vis.barLegendText.enter().append("text")
@@ -192,7 +221,7 @@ Barchart.prototype.updateVis = function() {
   vis.bars = vis.svg.selectAll(".bar").data(vis.displayData);
   vis.bars = vis.bars.enter().append("g")
     .merge(vis.bars)
-    .attr("class", "bar")
+      .attr("class", function(d){ return "bar " + d.department1; })
     .attr("transform", function(d) { return "translate(0," + vis.y(d.department1) + ")"; });
 
   vis.text1 = vis.bars.append("text")
@@ -208,44 +237,26 @@ Barchart.prototype.updateVis = function() {
       return d3.format(".1f")(d[vis.metric + '_mean']);
     });
 
-  // vis.text2 = vis.bars.append("text")
-  //   .attr("x", function(d) { return 590; })
-  //   .attr("y", vis.y.bandwidth()/2)
-  //   .attr("dy", "0.5em")
-  //   .attr("dx", "0.5em")
-  //   .style("font" ,"12px sans-serif")
-  //   .style("text-anchor", "end")
-  //   .style("fill", 'black')
-  //   .style("cursor", "pointer")
-  //   .text(function(d) {
-  //     return d3.format(".1f")(d[vis.metric + '_instdev']);
-  //   });
-  //
-  // vis.text3 = vis.bars.append("text")
-  //   .attr("x", function(d) { return 620; })
-  //   .attr("y", vis.y.bandwidth()/2)
-  //   .attr("dy", "0.5em")
-  //   .attr("dx", "0.5em")
-  //   .style("font" ,"12px sans-serif")
-  //   .style("text-anchor", "end")
-  //   .style("fill", 'black')
-  //   .style("cursor", "pointer")
-  //   .text(function(d) {
-  //     return d3.format(".1f")(d[vis.metric + '_outstdev']);
-  //   });
-
   vis.subbars = vis.bars.selectAll("rect")
     .data(function(d){ return d[vis.metric + '_boxes']; });
 
   vis.subbars = vis.subbars.enter().append("rect")
     .merge(vis.subbars)
     .on('mouseover', function(d) {
+      var barsInThatDept = d3.selectAll("g." + d.dept + " rect");
+      barsInThatDept.style("opacity", 1);
+        vis.tool_tip.show(d);
       d3.select(this).style("fill", "red");
     })
     .on('mouseout', function(d) {
+        var barsInThatDept = d3.selectAll("g." + d.dept + " rect");
+        barsInThatDept.style("opacity", 0.6);
+      vis.tool_tip.hide();
       d3.select(this).style("fill", function(d) { return vis.color(d.name); });
     })
-    .attr("class", "subbar")
+    .attr("class", function(d){
+      return d.name + " subrect";
+    })
     .transition()
     .duration(1000)
     .attr("height", vis.y.bandwidth)
@@ -256,9 +267,13 @@ Barchart.prototype.updateVis = function() {
       if (i <= 4) { return vis.xleft(d.x1) - vis.xleft(d.x0) } else { return vis.xright(d.x1) - vis.xright(d.x0)};
     })
     .style("fill", function(d) { return vis.color(d.name); })
-    .attr("class", "subrect")
+      .style("opacity", 0.6)
+      .style("stroke-width", 1)
+      .style("stroke", "black")
     .style("cursor", "pointer");
 
+  // vis.bars.exit().remove();
+  // vis.subbars.exit().remove();
 };
 
 // Data specific wrangling functions
@@ -282,7 +297,8 @@ Barchart.prototype.preprocess = function() {
         return {
           name: name,
           x0: x0,
-          x1: x0 += d[name]
+          x1: x0 += d[name],
+            dept: d.department1
         };
       });
       // Normalize
@@ -298,12 +314,14 @@ Barchart.prototype.preprocess = function() {
       d[m + '_boxes'].push({
               name: m + "_invar",
               x0: 0,
-              x1: invar
+              x1: invar,
+              dept: d.department1
           });
       d[m + '_boxes'].push({
           name: m + "_outvar",
           x0: invar,
-          x1: invar + outvar
+          x1: invar + outvar,
+          dept: d.department1
       });
     });
 

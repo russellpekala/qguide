@@ -24,15 +24,28 @@ body {
 p, ol {
     text-align: left;
 }
+.footnotes p {
+    margin: 0;
+    padding: 0;
+}
+
+.footnotes .emphasis {
+    font-style: italic;
+    font-weight: bold;
+}
+
+th text {
+    opacity: 1;
+}
 
 .top-label-chart {
     text-align: center;
     margin: auto;
 }
 
-th {
-    background-color: crimson;
-}
+/*th {*/
+    /*background-color: crimson;*/
+/*}*/
 
 td, th {
     border: 1px solid black;

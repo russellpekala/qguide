@@ -8,109 +8,182 @@
 <body>
     <div class="text-center">
         <h1>Analysis of the Q Guide</h1>
+        <h4>By Russell Pekala</h4>
+        <p>
+            The <a href="https://q.fas.harvard.edu/faq.htm">Harvard Q Guide</a>, and the supplementary
+            <a href="https://courses.cs50.net/">CS50 tool</a> are the primary non-human resources that
+            Harvard students use to plan their academic trajectory and understand their university's academic offerings.
+            Despite how useful these tools are, they were designed to help students select courses--they were not designed
+            for the task of actually understanding the academic system at Harvard.  In fact,
+        </p>
+        <p>
+            If we are going to be asked to front a sticker price of $60000 and thousands of hours of time,
+            I argue that we should at least know what we're getting out of our Harvard education.  There are two
+            fundamental reasons that students choose to go to colleges like Harvard: to learn and to get an impressive
+            credential. To the extent to which Harvard seeks to educate, this data is useful in understanding the
+            distributions of what students are studying and where Harvard is allocating its resources.
+            To the extent that college serves to rank and measure students, this data is valuable in establishing
+            the merits and work ethics of students--especially as grade inflation degrades the signal behind students'
+            nominal grades.
+        </p>
+
+        <p>
+            It's equally important from a societal perspective to understand the nature of a Harvard education.
+            As an educational
+            nonprofit, Harvard is largely supported by public funds.  Most of these funds come in the form of tax breaks
+            and research grants, but other sources of funding like Pell Grants and ??? loans directly fund student tuition.  As
+            tuition increases (driven largely by top schools like Harvard) start to take a serious toll on , the public is rightfully
+            questioning the effectiveness of colleges at facilitating social mobility.
+            Additionally, with Harvard facing the dual allegations of
+            (1) discrimination in its admissions process and (2) not doing enough to support low-income students,
+            it is absurd that there appears to be negligible effort
+            to statistically evaluate hypotheses about how aspiring students will do once at Harvard.  Unfortunately,
+            the information within the Q Guide isn't enough to answer any of these questions since there is no demographic
+            information associated with student response data.
+        </p>
+
         <p>
             The Harvard Q Guide has been scraped several times in the past, each time driving out certain elements
-            of the data.  Yet despite this, and despite the importance of understanding our own education, there is no
-            one resource for understanding this data (besides the tools the University provides).  In this analysis,
-            I want to provide a starting point to do a lot of cool data analyses so that other people might be able
-            to follow easily in my footsteps and create a shared collaborative space for Q Guide analysis.
+            of its vast data.  The most comprehensive recent scraping was done by Roger Zou in 2016, who used a python
+            scraper and did some interesting data science in Microsoft Excel.  Other interesting projects have been done by
+            Patrick Pan, Ryan Kerr, and perhaps others.  Like other stabs at understanding this dataset, the following
+            analysis does not claim to be complete.  There seems to be no limit to the number of interesting patterns in the data, and
+            I hope that others will be interested in this project and continue with it where I left off.
         </p>
         <p>
-            There are so many natural questions that one might ask about the Q Guide itself.
+            The data scraping for this project was done using Web Scraper, a Chrome Extension.  I could not get Zou's
+            code to work directly, probably because of changes in Harvard's 2-Factor authentication system since 2016.
+            A description of how Sara Valente and I scraped this information can be learned about in a medium post
+            we wrote here.
         </p>
-        <ol>
-            <li>What is being taught and how has this changed over time?</li>
-            <li>What are the best/hardest courses or concentrations?</li>
-            <li>What is being said on the Q Guide and is there any way to systematically understand the comments?</li>
-        </ol>
         <p>
-            We'll start with the information that everyone wants to see first: the workload and ratings scores.
-            We weight by student not by class so as to not inflate the influence of small courses.
+            We'll start with the information that everyone wants to see first: ratings scores.  These are generally
+            the first things that
             The best rated courses are We
             notice (showing the top 30 concentrations) that Math, Computer Science, Physics, and Chemistry tended
             to be the most demanding courses going as far back as the data went.
         </p>
 
         <h3>Barchart for Course Ratings by Department</h3>
-        <select onchange="barchart.changeYear()" class="selectpicker" id="year-select">
-            <option value=2017>2017</option>
-            <option value=2016>2016</option>
-            <option value=2015>2015</option>
-        </select>
-        <select onchange="barchart.changeMetric()" class="selectpicker" id="metric-select">
-            <option value="workload">Workload</option>
-            <option value="overall">Overall Rating</option>
-        </select>
-        <select onchange="barchart.sort()" class="selectpicker" id="sort-select">
-            <option value="alphabetical">Alphabetical</option>
-            <option value="mean">Mean</option>
-            <option value="outstdev">Inter-Standard Deviation</option>
-            <option value="instdev">Intra-Standard Deviation</option>
-        </select>
-        <div id="barchart"></div>
+        <div class="col-md-12">
+            <p class="top-level-chart">
+                Check out <select onchange="barchart.changeMetric()" class="selectpicker" id="metric-select">
+                    <option value="workload">Workload</option>
+                    <option value="overall">Overall Rating</option>
+                </select> data from <select onchange="barchart.changeYear()" class="selectpicker" id="year-select">
+                    <option value=2017>2017</option>
+                <option value=2016>2016</option>
+                <option value=2015>2015</option>
+                </select> sorted <select onchange="barchart.sort()" class="selectpicker" id="sort-select">
+                    <option value="alphabetical">alphabetically</option>
+                    <option value="mean">by mean</option>
+                    <option value="outstdev">by in-standard deviation</option>
+                    <option value="instdev">by out-Standard deviation</option>
+                </select>.
+            </p>
+            <div id="barchart"></div>
+            <div class="row text-center footnotes" style="margin:auto;">
+                <p style="font-size: 10px;"><sup>*</sup> In-standard deviation is the average standard deviation
+                    of observations <span class="emphasis">within classes</span> in the chosen department, weighted according to class size.
+                    Out-standard deviation is the average standard deviation
+                    of observations <span class="emphasis">between class means</span> in the chosen department, weighted according to class size.
+                </p>
+            </div>
+        </div>
+
         <p>
-            This is perhaps something that people already knew.
+            Among the metrics above, the question of workload is the most talked about, among both students trying to
+            find easy classes to take and alike by students trying to justify the impossibility of their academic load.
+            The concept of telling students how much work different classes take is a somewhat controversial idea. In
+            fact, the Q Guide used to feature both a measure of workload and of difficulty, before the
+            <a href="http://www.thecrimson.com/article/2014/5/20/q-guide-difficulty-dropped/">2014 Faculty Council</a>
+            decision to strip away the difficulty metric that enabled students to systematically select classes that were easy A's.
+            Students fought hard to keep the workload metric on the Q Guide, arguing that it was crucial to their efforts
+            to balance their schedules and maintain a healthy and predictable amount of work.
         </p>
-        <h2>What's with the High Workload Standard Deviation?</h2>
-        <select onchange="stdevList.wrangleData()" class="selectpicker" id="year-select2">
-            <option value=2017>2017</option>
-            <option value=2016>2016</option>
-            <option value=2015>2015</option>
-        </select>
-        <select onchange="stdevList.wrangleData()" class="selectpicker" id="term-select2">
-            <option value="spring">Spring</option>
-            <option value="fall">Fall</option>
-        </select>
-        <select onchange="stdevList.wrangleData()" class="selectpicker" id="metric-select2">
-            <option value="Workload">Workload</option>
-            <option value="Overall">Overall Rating</option>
-        </select>
-        <select onchange="stdevList.wrangleData()" class="selectpicker" id="department-select2">
-            <option value="AESTHINT">Aesth. & Int.</option>
-            <option value="AFRAMER">Af. Am. Studies</option>
-            <option value="ANTHRO">Anthropology</option>
-            <option value="APMTH">Ap. Math</option>
-            <option value="CHEM">Chemistry</option>
-            <option value="COMPSCI">Comp. Sci.</option>
-            <option value="CULTBLF">Cult. & Belief</option>
-            <option value="ECON">Economics</option>
-            <option value="ENG-SCI">Eng. Sci.</option>
-            <option value="ENGLISH">English</option>
-            <option value="ETHRSON">Eth. Reasoning</option>
-            <option value="EXPOS">Expos. Writing</option>
-            <option value="FRSEMR">Freshman Seminar</option>
-            <option value="GOV">Government</option>
-            <option value="HIST">History</option>
-            <option value="HISTSCI">Hist. of Sci.</option>
-            <option value="LIFESCI">Life Science</option>
-            <option value="MATH">Mathematics</option>
-            <option value="MCB">MCB</option>
-            <option value="MUSIC">Music</option>
-            <option value="PHYSCI">Phys. Sci.</option>
-            <option value="PHYSICS">Physics</option>
-            <option value="PSY">Psychology</option>
-            <option value="SCILIVSY">Sci. Living Systems</option>
-            <option value="SCIPHUNV">Sci. Physical Univ.</option>
-            <option value="SOCIOL">Sociology</option>
-            <option value="SOCWORLD">Soc's of the World</option>
-            <option value="SPANSH">Spanish</option>
-            <option value="STAT">Statistics</option>
-            <option value="US-WORLD">US in the World</option>
-        </select>
-        <select onchange="stdevList.wrangleData()" class="selectpicker" id="order-select2">
-            <option value="-1">Least to Greatest</option>
-            <option value="1">Greatest to Least</option>
-        </select>
-        <select onchange="stdevList.wrangleData()" class="selectpicker" id="num-select2">
-            <option value=15>Show Top 15 Most Popular</option>
-            <option value=30>Show Top 30 Most Popular</option>
-            <option value=200>Show All</option>
-        </select>
-        <div id="stdevlist"></div>
+        <p>
+            The glaring conclusion from the above visualization is that classes in STEM fields carry on average more work than
+            classes in other departments.  Most people are probably aware of this trend, but actually this pattern is
+            somewhat deceiving since STEM fields have so much higher workload variance than non-STEM fields.  Courses in
+            my field of Mathematics, for example, had a standard deviation of over seven hours per week of work.
+        </p>
+        <p>
+            It's a natural question then whether this variance stems from in-class variance or high between-class variance.
+            High in-class variance would be a symptom of the same course costing its students vastly different quantities
+            of time, perhaps depending on ability.  High between-class variance would be a symptom of a department that
+            has courses of vastly different difficulties under the same departmental umbrella.  An intro-stats understanding
+            of variance decomposition shows that these two sources of variance combined describe the entire variance.
+        </p>
+        <p>
+            The data clearly show that workload variance in STEM fields comes overwhelmingly from between-class
+            variance.  This might be explained by the tendency for STEM classes tend to be sequential and ability-segregated in a way that
+            courses in other departments are not.  This variance decomposition might also be a reflection of the
+            recent creation of easier courses and pathways within STEM fields that didn't exist before.  JUSTIFICATION NEEDED.
+        </p>
+        <div class="col-dm-12">
+            <p class="top-level-chart">
+                Select to view information on <select onchange="stdevList.activePage=0;stdevList.wrangleData()" class="selectpicker" id="update-term2">
+                    <option value="2017_spring">Spring 2017</option>
+                    <option value="2016_fall">Fall 2016</option>
+                    <option value="2016_spring">Spring 2016</option>
+                    <option value="2015_fall">Fall 2015</option>
+                    <option value="2015_spring">Spring 2015</option>
+                    <option value="2014_fall">Fall 2014</option>
+                    <option value="2014_spring">Spring 2014</option>
+                    <option value="2013_fall">Fall 2013</option>
+                    <option value="2013_spring">Spring 2013</option>
+                    <option value="2012_fall">Fall 2012</option>
+                    <option value="2012_spring">Spring 2012</option>
+                    <option value="2011_fall">Fall 2011</option>
+                </select> <select onchange="stdevList.activePage=0;stdevList.wrangleData()" class="selectpicker" id="department-select2">
+                    <option value="AESTHINT">Aesth. & Int.</option>
+                    <option value="AFRAMER">Af. Am. Studies</option>
+                    <option value="ANTHRO">Anthropology</option>
+                    <option value="APMTH">Ap. Math</option>
+                    <option value="CHEM">Chemistry</option>
+                    <option value="COMPSCI">Comp. Sci.</option>
+                    <option value="CULTBLF">Cult. & Belief</option>
+                    <option value="ECON">Economics</option>
+                    <option value="ENG-SCI">Eng. Sci.</option>
+                    <option value="ENGLISH">English</option>
+                    <option value="ETHRSON">Eth. Reasoning</option>
+                    <option value="EXPOS">Expos. Writing</option>
+                    <option value="FRSEMR">Freshman Seminar</option>
+                    <option value="GOV">Government</option>
+                    <option value="HIST">History</option>
+                    <option value="HISTSCI">Hist. of Sci.</option>
+                    <option value="LIFESCI">Life Science</option>
+                    <option value="MATH">Mathematics</option>
+                    <option value="MCB">MCB</option>
+                    <option value="MUSIC">Music</option>
+                    <option value="PHYSCI">Phys. Sci.</option>
+                    <option value="PHYSICS">Physics</option>
+                    <option value="PSY">Psychology</option>
+                    <option value="SCILIVSY">Sci. Living Systems</option>
+                    <option value="SCIPHUNV">Sci. Physical Univ.</option>
+                    <option value="SOCIOL">Sociology</option>
+                    <option value="SOCWORLD">Soc's of the World</option>
+                    <option value="SPANSH">Spanish</option>
+                    <option value="STAT">Statistics</option>
+                    <option value="US-WORLD">US in the World</option>
+                </select> courses sorted by <select onchange="stdevList.activePage=0;stdevList.wrangleData()" class="selectpicker" id="metric-select2">
+                    <option value="Workload">Workload</option>
+                    <option value="Overall">Overall Rating</option>
+                </select> from <select onchange="stdevList.activePage=0;stdevList.wrangleData()" class="selectpicker" id="order-select2">
+                    <option value="-1">Least to Greatest</option>
+                    <option value="1">Greatest to Least</option>
+                </select>.
+            </p>
+            <div id="for-nav">
+                Showing Results:
+            </div>
+            <div id="stdevlist"></div>
+        </div>
 
         <h2> What are people studying?  </h2>
         <div id="department-label"></div>
         <div id="area"></div>
+        <div id="area2"></div>
         <p>
             This chart originally seems a bit uninteresting, there isn't the kind of dramatic expansion of
             enrollment in Statistics and Computer Science that might have been expected (though those trends
@@ -118,6 +191,8 @@
             in the fall semester rather than the spring semester is something that is caused by more people taking time
             off during the second rather than the first semester.
         </p>
+
+
 
         <h2> What's class like?</h2>
         <div class="col-md-12">
@@ -172,8 +247,19 @@
                     their class to be.
                 </p>
             </div>
-
         </div>
+
+        <p>
+            Students' experiences in class vary greatly by the departments those classes are in.  This is reflected in
+            Q Guide data through the starkly different median class sizes between departments.  General Education classes
+            (in departments like Aesthetic and Interpretive Understanding, Science of Living Systems, Science of the Physical Universe,
+            United States in the World, Societies of the World, ) had by far the largest class sizes, followed by STEM classes.
+            The overwhelming values of
+
+            Despite Harvard's supposed attention paid to its
+            general education program, the median course sizes are orders of magnitude bigger than median class sizes
+            in other departments.
+        </p>
 
 
 

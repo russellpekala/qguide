@@ -13,6 +13,7 @@ Scatter = function(_customScales, _parentElement, _data, _metricX, _metricY, _la
   this.department = "MATH";
   this.categories = _categories;
   this.customScales = _customScales;
+  console.log(this.categories);
 
   vis.toolTip = _isWorkScatter ? "Course" : "name";
   vis.selectedWord = null;

@@ -41,20 +41,30 @@ d3.json("data/wordcloud_data.json", function(data){
   wordcloud = new WordCloud('wordcloud', data, {});
 });
 
-d3.json("constants/conventions.json", function(conventions){
-  d3.csv("data/statistics.csv", function(data){
-    data.forEach(function(d){
-      data.columns.forEach(function(col){
-        if(!isNaN(d[col])){
-          d[col] = +d[col];
-        }
-      });
-    });
-    barchart = new Barchart('barchart', data, 2017, 'workload', ['workload', 'overall'], conventions);
-  });
-});
+
 
 d3.json("constants/categories.json", function(categories){
+
+    d3.json("constants/conventions.json", function(conventions){
+        d3.csv("data/statistics.csv", function(data){
+            data.forEach(function(d){
+                data.columns.forEach(function(col){
+                    if(!isNaN(d[col])){
+                        d[col] = +d[col];
+                    }
+                });
+            });
+            barchart = new Barchart('barchart', data, 2017, 'workload', ['workload', 'overall'], conventions, categories);
+        });
+    });
+
+    var colorNaive = d3.scaleOrdinal(d3.schemeCategory10)
+        .domain(Object.values(categories).map(function(d){ return d.category; }).unique());
+
+    var color = function (d) {
+        return colorNaive(categories[d].category);
+    };
+
     d3.json("data/enrollment.json", function(data){
         enrollmentHistogram = new Histogram('enrollment', _isEnrollmentHistogram=true, data, 'MATH', {x: 'Enrollment Size', y: 'Number of Classes'}, 150, numTicks=30, size={
             width: 500,
@@ -67,7 +77,6 @@ d3.json("constants/categories.json", function(categories){
         d3.json("data/short_workload_list.json", function (workloadData) {
             d3.json("constants/word_categories.json", function (wordCategories) {
                 var scatterData = makeScatterData(workloadData, overallData, wordCategories);
-                console.log(scatterData);
                 myscatter = new Scatter({
                     workload: [0,10],
                     overall: [3.5, 4.5]
@@ -93,11 +102,16 @@ d3.json("constants/categories.json", function(categories){
     });
 
     d3.json("data/enrollment_history.json", function(data){
-        area = new Area('area', data, labels={x:"semester", y: "enrollment"}, _size={
+        area = new Area('area', data, labels={x:"Semester", y: "Enrollment"}, _size={
             width: 700,
             height: 350,
             margin: { top: 40, right: 100, bottom: 60, left: 70 }
-        }, _categories=categories);
+        }, _categories=categories, color, colorNaive);
+        area2 = new Area('area2', null, labels={x:"Semester", y: "Enrollment"}, _size={
+            width: 700,
+            height: 130,
+            margin: { top: 30, right: 100, bottom: 60, left: 70 }
+        }, _categories=categories, color, colorNaive);
     });
 
     d3.json("data/correlations.json", function(correlations){
@@ -130,7 +144,7 @@ d3.json("constants/categories.json", function(categories){
     });
 
     d3.csv("data/ranked.csv", function(data){
-        stdevList = new StdevList('stdevlist', data, 'MATH', 2017, 'workload', [10, 100]);
+        stdevList = new StdevList('stdevlist', data, color);
 
         workScatter = new Scatter({}, 'work-scatter', data, 'Workload', 'Overall', labels={x: "Workload", y: "Rating"}, size={
             width: 500,
@@ -162,4 +176,8 @@ function brushedWorkload() {
     workLineupF.y.domain(selectionDomain);
     // Update focus chart (detailed information)
     workLineupF.updateVis();
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }

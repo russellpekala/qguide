@@ -165,18 +165,14 @@ Area.prototype.updateVis = function() {
         vis.xAxis = d3.axisBottom(vis.x);
         vis.yAxis = d3.axisLeft(vis.y).tickFormat(parse);
         vis.svg.select(".x-axis")
-        .transition()
-        .duration(500)
+            .transition()
+            .duration(500)
             .call(vis.xAxis)
             .selectAll("text")
             .attr("text-anchor", "start")
             .attr("transform", "translate(10, 0)rotate(45)");
     }
     else {
-        // vis.x.domain(["Fall 2011", "Spring 2012", "Fall 2012", "Spring 2013",
-        //               "Fall 2013", "Spring 2014", "Fall 2014", "Spring 2015",
-        //               "Fall 2015", "Spring 2016", "Fall 2016", "Spring 2017"]);
-        // console.log(vis.x.domain());
         vis.xAxis = d3.axisBottom(vis.x);
         vis.svg.select(".x-axis")
             .transition()
