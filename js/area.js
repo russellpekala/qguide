@@ -2,7 +2,6 @@ Area = function(_parentElement, _data, _labels, _size, _categories, _color, _nai
 
     this.parentElement = _parentElement;
     this.data = _data;
-
     this.labels = _labels;
     this.size = _size;
     this.categories = _categories;
@@ -53,21 +52,37 @@ Area.prototype.initVis = function(){
         .offset([0, 0])
         .html(function(d) { return this.id; });
 
+    vis.data.sort(function(a, b){
+        return compareSemesters(vis.translate(a.year), vis.translate(b.year));
+    });
+
+    vis.svg.append('text')
+        .attr('class', 'axis-label label')
+        .attr('text-anchor', 'middle')
+        .attr('transform', "translate("+ vis.width/2 +","+ (vis.height + 60) +")")
+        .text(vis.labels.x);
+
+    vis.svg.append('text')
+        .attr('class', 'axis-label label')
+        .attr('text-anchor', 'middle')
+        .attr('transform', "translate(-37, " + (vis.height / 2) + ")rotate(-90)")
+        .text(vis.labels.y);
+
     vis.wrangleData();
 };
 
 
-Area.prototype.wrangleData = function(){
+Area.prototype.wrangleData = function(dept){
     var vis = this;
-
-    vis.runningTotal = 0;
-
 
     vis.updateVis();
 };
 
 Area.prototype.updateVis = function() {
     var vis = this;
+
+    vis.key = $("#department-select3").val();
+    vis.svg.selectAll("label").remove();
 
     function constructOrdRange(){
         var lst = [];
@@ -78,133 +93,100 @@ Area.prototype.updateVis = function() {
         return lst;
     }
 
+    vis.keys = Object.keys(vis.data[0]).filter(function(d){ return d !== "year"; });
+    vis.x.domain(vis.data.map(function(d) { return vis.translate(d.year); }))
+        .range(constructOrdRange());
+    vis.y.domain([0, d3.max(vis.data, function(d){
+        var t = 0;
+        vis.keys.forEach(function(k){
+            t += d[k];
+        });
+        return t;
+    })]);
+    vis.order = calculateOrder(vis.data);
 
-    if(vis.data){
-        vis.keys = Object.keys(vis.data[0]).filter(function(d){ return d !== "year"; });
-        vis.x.domain(vis.data.map(function(d) { return vis.translate(d.year); }))
-            .range(constructOrdRange());
-        vis.y.domain([0, d3.max(vis.data, function(d){
-            var t = 0;
-            vis.keys.forEach(function(k){
-                t += d[k];
-            });
-            return t;
-        })]);
-        vis.order = calculateOrder(vis.data);
+    vis.stack = d3.stack().keys(vis.order);
+    vis.stacked = vis.stack(vis.data);
 
-        vis.stack = d3.stack().keys(vis.order);
-        vis.stacked = vis.stack(vis.data);
-
-
-        vis.layer = vis.svg.selectAll(".layer")
-            .data(vis.stacked)
-            .enter().append("g")
-            .attr("class", "layer");
+    vis.layer = vis.svg.selectAll(".layer")
+        .data(vis.stacked)
+        .enter().append("g")
+        .attr("class", "layer");
 
 
-        vis.biggestCategories.reverse();
-        vis.area = d3.area()
-            .x(function(d) { return vis.x(d.data.year); })
-            .y0(function(d) { return vis.y(d[0]); })
-            .y1(function(d) { return vis.y(d[1]); });
+    vis.biggestCategories.reverse();
+    vis.area = d3.area()
+        .x(function(d) { return vis.x(vis.translate(d.data.year)); })
+        .y0(function(d) { return vis.y(d[0]); })
+        .y1(function(d) { return vis.y(d[1]); });
 
-        vis.layer.append("path")
-            .attr("class", "area")
-            .attr("id", function(d){ return d.key; })
-            .style("fill", function(d) { return vis.color(d.key); })
-            .attr("d", vis.area)
-            .style("opacity", .6)
-            .style("stroke", "white")
-            .style("stroke-width", 1)
-            .on("click", function(d){ console.log(d); })
-            .on("mouseover", function(d){
-                this.style.opacity = 1;
-                $("#department-label").html(this.id);
-            })
-            .on("mouseout", function(d){
-                this.style.opacity = .6;
-                $("#department-label").html("");
-            });
-        vis.x.domain(vis.x.domain().filter(function(d){ return d.indexOf("_") === -1; })); // Get index back ?
+    vis.adjustOpacities = function(){
+        vis.svg.selectAll(".area").style("opacity", function(d){
+            return d.key === vis.key ? 1 : 0.6;
+        });
+    };
+    vis.adjustOpacities();
 
-        if(vis.wasBigArea){
-            vis.legend = vis.svg.selectAll(".legend")
-                .data(Object.values(vis.categories).map(function(d){ return d.category; }).unique()).enter()
-                .append("g")
-                .attr("class","legend")
-                .attr("transform", "translate(" + (vis.width +20) + "," + 0+ ")");
+    vis.layer.append("path")
+        .attr("class", "area")
+        .attr("id", function(d){ return d.key; })
+        .style("fill", function(d) { return vis.color(d.key); })
+        .attr("d", vis.area)
+        .style("opacity", function(d){
+            return d.key === vis.key ? 1 : 0.6;
+        })
+        .style("stroke", "white")
+        .style("stroke-width", 1)
+        .on("click", function(d){
+            $("#department-select3").val(d.key);
+            area2.wrangleData();
+            vis.key = d.key;
+            vis.adjustOpacities();
+        });
 
-            vis.legend.append("rect")
-                .attr("x", 0)
-                .attr("y", function(d, i) { return 20 * i; })
-                .attr("width", 10)
-                .attr("height", 10)
-                .style("fill", function(d) { return vis.naiveColor(d); });
+    vis.legend = vis.svg.selectAll(".legend")
+        .data(Object.values(vis.categories).map(function(d){ return d.category; }).unique()).enter()
+        .append("g")
+        .attr("class","legend")
+        .attr("transform", "translate(" + (vis.width +20) + "," + 0+ ")");
 
-            vis.legend.append("text")
-                .attr("x", 20)
-                .attr("dy", "0.75em")
-                .attr("y", function(d, i) { return 20 * i; })
-                .text(function(d) {return d});
+    vis.legend.append("rect")
+        .attr("x", 0)
+        .attr("y", function(d, i) { return 20 * i; })
+        .attr("width", 10)
+        .attr("height", 10)
+        .style("fill", function(d) { return vis.naiveColor(d); });
 
-            vis.legend.append("text")
-                .attr("x",0)
-                //      .attr("dy", "0.75em")
-                .attr("y",-10)
-                .text("Categories");
-        }
-    } // Everything but "year"
-    else {
+    vis.legend.append("text")
+        .attr("x", 20)
+        .attr("class", "label")
+        .attr("dy", "0.75em")
+        .attr("y", function(d, i) { return 20 * i; })
+        .text(function(d) {return d});
 
-    }
-
+    vis.legend.append("text")
+        .attr("x",0)
+        //      .attr("dy", "0.75em")
+        .attr("y",-10)
+        .attr("class", "label")
+        .text("Categories");
 
     vis.yAxis = d3.axisLeft(vis.y).tickFormat(parse);
 
-    if(vis.data){
-        vis.xAxis = d3.axisBottom(vis.x);
-        vis.yAxis = d3.axisLeft(vis.y).tickFormat(parse);
-        vis.svg.select(".x-axis")
-        .transition()
-        .duration(500)
-            .call(vis.xAxis)
-            .selectAll("text")
-            .attr("text-anchor", "start")
-            .attr("transform", "translate(10, 0)rotate(45)");
-    }
-    else {
-        // vis.x.domain(["Fall 2011", "Spring 2012", "Fall 2012", "Spring 2013",
-        //               "Fall 2013", "Spring 2014", "Fall 2014", "Spring 2015",
-        //               "Fall 2015", "Spring 2016", "Fall 2016", "Spring 2017"]);
-        // console.log(vis.x.domain());
-        vis.xAxis = d3.axisBottom(vis.x);
-        vis.svg.select(".x-axis")
-            .transition()
-            .duration(500)
-            .call(vis.xAxis)
-            .selectAll("text")
-            .attr("text-anchor", "start")
-            .attr("transform", "translate(10, 0)rotate(45)");
-    }
-
-
+    vis.xAxis = d3.axisBottom(vis.x);
+    vis.yAxis = d3.axisLeft(vis.y).tickFormat(parse);
+    vis.svg.select(".x-axis")
+    .transition()
+    .duration(500)
+        .call(vis.xAxis)
+        .selectAll("text")
+        .attr("text-anchor", "start")
+        .attr("transform", "translate(10, 0)rotate(45)");
 
     vis.svg.select(".y-axis")
         .transition()
         .duration(500)
         .call(vis.yAxis.ticks(5));
-
-    vis.svg.append('text')
-        .attr('class', 'axis-label')
-        .attr('text-anchor', 'middle')
-        .attr('transform', "translate("+ vis.width/2 +","+ (vis.height + 60) +")")
-        .text(vis.labels.x);
-
-    vis.svg.append('text')
-        .attr('class', 'axis-label')
-        .attr('text-anchor', 'middle')
-        .attr('transform', "translate(-37, " + (vis.height / 2) + ")rotate(-90)")
-        .text(vis.labels.y);
 
 
 

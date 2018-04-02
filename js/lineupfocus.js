@@ -94,8 +94,11 @@ LineUpFocus.prototype.wrangleData = function(){
 
 LineUpFocus.prototype.updateVis = function(){
     var vis = this;
+    vis.isSelected = !vis.isWorkLineUp ? $("#enrollment-select").val() : $("#department-select").val();
+
     vis.svg.call(vis.tool_tip);
     vis.svg.selectAll(".axis-label").remove();
+    vis.svg.selectAll("line").remove();
 
     vis.yAxis = d3.axisLeft(vis.y);
 
@@ -126,14 +129,30 @@ LineUpFocus.prototype.updateVis = function(){
             if(!vis.isWorkLineUp){
                 $("#enrollment-select").val(d.name);
                 enrollmentHistogram.updateKey(d.name, vis.color(vis.categories[d.name].category));
+                vis.updateVis();
             }
-            else {
+            else { // If about work
                 $("#department-select").val(d.name);
                 workScatter.updateDept();
+                vis.updateVis();
             }
         });
 
     vis.dot.exit().remove();
+
+    var v = vis.displayData.filter(function(d){ return d.name === vis.isSelected; })[0];
+    vis.svg.append("line")
+        .style("stroke", vis.color(vis.categories[v.name].category))
+        .style("stroke-width", "2.5px")
+        .attr("id", "linething")
+        .style("opacity", function(d){
+            var w = vis.y(v.value);
+            return (w < vis.y.range()[1] && w > vis.y.range()[0]) || (w > vis.y.range()[1] && w < vis.y.range()[0]) ? 0.6 : 0;
+        })
+        .attr("x1", 0)
+        .attr("y1", vis.y(v.value))
+        .attr("x2", vis.width - vis.margin.right)
+        .attr("y2", vis.y(v.value));
 
     // // Labels
     vis.svg.append('text')

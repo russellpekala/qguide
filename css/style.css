@@ -16,6 +16,11 @@ rect.bar {
     stroke-width: 1.5px;
 }
 
+button {
+    border-radius: 4px;
+    border: 1px dashed black;
+}
+
 body {
     margin: 5% 10%;
     background-color: #FAFAFA;

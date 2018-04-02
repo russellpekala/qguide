@@ -66,7 +66,7 @@ d3.json("constants/categories.json", function(categories){
     };
 
     d3.json("data/enrollment.json", function(data){
-        enrollmentHistogram = new Histogram('enrollment', _isEnrollmentHistogram=true, data, 'MATH', {x: 'Enrollment Size', y: 'Number of Classes'}, 150, numTicks=30, size={
+        enrollmentHistogram = new Histogram('enrollment', _isEnrollmentHistogram=true, data, {x: 'Enrollment Size', y: 'Number of Classes'}, 150, numTicks=30, size={
             width: 500,
             height: 350,
             margin: { top: 40, right: 50, bottom: 30, left: 120 }
@@ -89,7 +89,7 @@ d3.json("constants/categories.json", function(categories){
                 myhistogram = new Histogram('histogram', _isEnrollmentHistogram=false, {
                     workload: workloadData,
                     overall: overallData
-                }, 'nothing', {x: "Workload (hours/week)"}, _maxX = 10, _numTicks = 30, _size = {
+                }, {x: "Workload (hours/week)"}, _maxX = 10, _numTicks = 30, _size = {
                     width: 700,
                     height: 100,
                     margin: {top: 5, right: 100, bottom: 60, left: 70}
@@ -102,15 +102,15 @@ d3.json("constants/categories.json", function(categories){
     });
 
     d3.json("data/enrollment_history.json", function(data){
-        area = new Area('area', data, labels={x:"Semester", y: "Enrollment"}, _size={
+        area = new Area('area', data, labels={y: "Enrollment"}, _size={
             width: 700,
             height: 350,
-            margin: { top: 40, right: 100, bottom: 60, left: 70 }
+            margin: { top: 40, right: 100, bottom: 7, left: 70 }
         }, _categories=categories, color, colorNaive);
-        area2 = new Area('area2', null, labels={x:"Semester", y: "Enrollment"}, _size={
+        area2 = new Area2('area2', data, labels={x:"Semester", y: "Enrollment"}, _size={
             width: 700,
             height: 130,
-            margin: { top: 30, right: 100, bottom: 60, left: 70 }
+            margin: { top: 5, right: 100, bottom: 60, left: 70 }
         }, _categories=categories, color, colorNaive);
     });
 
@@ -180,4 +180,26 @@ function brushedWorkload() {
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// Sort semesters in Spring YYYY, Fall YYYY order
+function compareSemesters(a, b){
+    var v1 = a.split(" ");
+    var v2 = b.split(" ");
+    if (parseInt(v1[1]) < parseInt(v2[1])){
+        return -1;
+    }
+    else {
+        if (parseInt(v1[1]) > parseInt(v2[1])){
+            return 1;
+        }
+        else {
+            if (v1[0] === "Fall"){
+                return 1;
+            }
+            else {
+                return -1;
+            }
+        }
+    }
 }

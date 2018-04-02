@@ -58,6 +58,10 @@ StdevList.prototype.wrangleData = function(newActivePage){
         correctDiv.appendChild(button);
     }
 
+    vis.displayData = vis.displayData.sort(function(a, b){
+        return (+a[vis.metric] < +b[vis.metric]? 1 * vis.sortOrder : -1 * vis.sortOrder);
+    });
+
   vis.displayData = vis.displayData.filter(function(d, i){
     return ((d.department === vis.department) &
             (d.term === vis.term) &
@@ -66,13 +70,7 @@ StdevList.prototype.wrangleData = function(newActivePage){
             (i >= (vis.activePage) * vis.pageSize));
   });
 
-  // If truncating to popular classes, need to have this.
-  vis.displayData = vis.displayData.sort(function(a, b){
-    return (+a["Enrollment"] < +b["Enrollment"]? 1 : -1);
-  }).slice(0, vis.num);
-  vis.displayData = vis.displayData.sort(function(a, b){
-    return (+a[vis.metric] < +b[vis.metric]? 1 * vis.sortOrder : -1 * vis.sortOrder);
-  });
+
 
   vis.updateVis();
 };

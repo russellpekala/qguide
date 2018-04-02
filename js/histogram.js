@@ -1,13 +1,13 @@
 
 var parse = d3.format(".2s");
 
-Histogram = function(_parentElement, _isEnrollmentHistogram, _data, _startKey, _labels, _maxX, _numTicks, _size, _categories, _customScales){
+Histogram = function(_parentElement, _isEnrollmentHistogram, _data, _labels, _maxX, _numTicks, _size, _categories, _customScales){
   var vis = this;
 
   vis.parentElement = _parentElement;
   vis.data = _data;
   vis.displayData = [];
-  vis.key = _startKey;
+  vis.key = !_isEnrollmentHistogram ? "nothing" : "AESTHINT";
   vis.labels = _labels;
   vis.maxX = _maxX;
   vis.numTicks = _numTicks;
@@ -65,12 +65,12 @@ Histogram.prototype.updateKey = function(newKey, newCat){
 
   if (newKey === undefined){
     vis.key = $('#enrollment-select').val();
+    vis.cat = vis.color(vis.categories[vis.key].category);
   }
   else {
     vis.key = newKey;
+      vis.cat = newCat;
   }
-
-  vis.cat = newCat;
 
   vis.wrangleData();
 };
@@ -78,8 +78,15 @@ Histogram.prototype.updateKey = function(newKey, newCat){
 Histogram.prototype.wrangleData = function(){
   var vis = this;
 
+  if(!vis.cat & (vis.key !== "nothing")){
+    vis.cat = vis.color(vis.categories[vis.key].category);
+  }
+
   vis.metric = $("#metric-select-scatter").val();
   vis.view = $("#view-select").val();
+  if (vis.isEnrollmentHistogram){
+    vis.labels.y = vis.view === "length" ? "Number of Classes" : "Number of Student Enrollments";
+  }
 
   if (vis.key === "nothing"){
     vis.displayData = [];

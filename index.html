@@ -14,7 +14,10 @@
             <a href="https://courses.cs50.net/">CS50 tool</a> are the primary non-human resources that
             Harvard students use to plan their academic trajectory and understand their university's academic offerings.
             Despite how useful these tools are, they were designed to help students select courses--they were not designed
-            for the task of actually understanding the academic system at Harvard.  In fact,
+            for the task of actually understanding the academic system at Harvard.
+
+            http://www.thecrimson.com/article/1973/4/26/cue-will-survey-44-large-courses/
+            http://www.thecrimson.com/article/2010/5/27/guide-cue-professors-course/
         </p>
         <p>
             If we are going to be asked to front a sticker price of $60000 and thousands of hours of time,
@@ -170,18 +173,60 @@
                     <option value="Workload">Workload</option>
                     <option value="Overall">Overall Rating</option>
                 </select> from <select onchange="stdevList.activePage=0;stdevList.wrangleData()" class="selectpicker" id="order-select2">
-                    <option value="-1">Least to Greatest</option>
                     <option value="1">Greatest to Least</option>
+                    <option value="-1">Least to Greatest</option>
                 </select>.
             </p>
-            <div id="for-nav">
+            <div id="for-nav" style="margin-bottom: 15px;">
                 Showing Results:
             </div>
             <div id="stdevlist"></div>
+            <div class="row text-center" style="margin:auto;">
+                <p style="font-size: 10px;"><sup>*</sup> Null rows like that for Spring 2017 Math 55B are null because
+                    they are null in the official, Harvard-maintained guide.  They are included here rather than discarded
+                    so readers know that those courses were indeed offered.  Their sort order above is not based on data.
+                </p>
+            </div>
         </div>
 
         <h2> What are people studying?  </h2>
-        <div id="department-label"></div>
+        <div class="col-md-12">
+            <p class="top-label-chart">
+                Check out how course enrollment is distributed between classes overall and throughout time.  See detail
+                about <select onchange="area.wrangleData(); area2.wrangleData();" class="selectpicker" id="department-select3">
+                    <option value="AESTHINT">Aesth. & Int.</option>
+                    <option value="AFRAMER">Af. Am. Studies</option>
+                    <option value="ANTHRO">Anthropology</option>
+                    <option value="APMTH">Ap. Math</option>
+                    <option value="CHEM">Chemistry</option>
+                    <option value="COMPSCI">Comp. Sci.</option>
+                    <option value="CULTBLF">Cult. & Belief</option>
+                    <option value="ECON">Economics</option>
+                    <option value="ENG-SCI">Eng. Sci.</option>
+                    <option value="ENGLISH">English</option>
+                    <option value="ETHRSON">Eth. Reasoning</option>
+                    <option value="EXPOS">Expos. Writing</option>
+                    <option value="FRSEMR">Freshman Seminar</option>
+                    <option value="GOV">Government</option>
+                    <option value="HIST">History</option>
+                    <option value="HISTSCI">Hist. of Sci.</option>
+                    <option value="LIFESCI">Life Science</option>
+                    <option value="MATH">Mathematics</option>
+                    <option value="MCB">MCB</option>
+                    <option value="MUSIC">Music</option>
+                    <option value="PHYSCI">Phys. Sci.</option>
+                    <option value="PHYSICS">Physics</option>
+                    <option value="PSY">Psychology</option>
+                    <option value="SCILIVSY">Sci. Living Systems</option>
+                    <option value="SCIPHUNV">Sci. Physical Univ.</option>
+                    <option value="SOCIOL">Sociology</option>
+                    <option value="SOCWORLD">Soc's of the World</option>
+                    <option value="SPANSH">Spanish</option>
+                    <option value="STAT">Statistics</option>
+                    <option value="US-WORLD">US in the World</option>
+                </select> enrollment.
+            </p>
+        </div>
         <div id="area"></div>
         <div id="area2"></div>
         <p>
@@ -198,7 +243,7 @@
         <div class="col-md-12">
             <div class="row text-center" style="margin:auto;">
                 <p class="top-label-chart"> This is the 2011-2017 aggregated enrollment histogram for
-                    <select onchange="enrollmentHistogram.updateKey()" class="selectpicker" id="enrollment-select">
+                    <select onchange="enrollmentHistogram.updateKey();histogramLineupF.wrangleData();" class="selectpicker" id="enrollment-select">
                         <option value="AESTHINT">Aesth. & Int.</option>
                         <option value="AFRAMER">Af. Am. Studies</option>
                         <option value="ANTHRO">Anthropology</option>
@@ -230,7 +275,7 @@
                         <option value="STAT">Statistics</option>
                         <option value="US-WORLD">US in the World</option>
                     </select>, using a
-                    <select onchange="enrollmentHistogram.wrangleData()" class="selectpicker" id="view-select">
+                    <select onchange="enrollmentHistogram.wrangleData();histogramLineupF.wrangleData();histogramLineupC.wrangleData()" class="selectpicker" id="view-select">
                         <option value="length">Class Level</option>
                         <option value="val">Student Level</option>
                     </select> perspective<sup>1</sup>.
@@ -273,7 +318,7 @@
         <div class="col-md-12">
             <div class="row text-center" style="margin:auto;">
                 <p class="top-label-chart"> The scatter shows course data from
-                    <select onchange="workScatter.updateDept()" class="selectpicker" id="department-select">
+                    <select onchange="workScatter.updateDept();workLineupF.wrangleData();" class="selectpicker" id="department-select">
                         <option value="AESTHINT">Aesth. & Int.</option>
                         <option value="AFRAMER">Af. Am. Studies</option>
                         <option value="ANTHRO">Anthropology</option>
@@ -429,6 +474,7 @@
     <script src="js/stdevlist.js"></script>
     <script src="js/wordcloud.js"></script>
     <script src="js/area.js"></script>
+    <script src="js/area2.js"></script>
     <script src="js/lineupfocus.js"></script>
     <script src="js/lineupcontext.js"></script>
 

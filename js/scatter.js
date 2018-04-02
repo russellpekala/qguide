@@ -10,7 +10,7 @@ Scatter = function(_customScales, _parentElement, _data, _metricX, _metricY, _la
   this.labelStatus = $("#label-select").val();
   this.size = _size;
   this.isWorkScatter = _isWorkScatter;
-  this.department = "MATH";
+  this.department = "AESTHINT";
   this.categories = _categories;
   this.customScales = _customScales;
   console.log(this.categories);

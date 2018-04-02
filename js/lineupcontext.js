@@ -79,6 +79,10 @@ LineUpContext.prototype.wrangleData = function(){
 
 LineUpContext.prototype.updateVis = function(){
     var vis = this;
+
+    vis.svg.selectAll(".brush").remove();
+    vis.svg.selectAll(".disclaimer").remove();
+    vis.svg.selectAll(".axis-label").remove();
     // Set scale domains.
     if(!vis.data2) { vis.y.domain([-.5, .5])} else { vis.y.domain([0, d3.max(vis.displayData,
         function(d){ return +d.value; }) + 5])};
