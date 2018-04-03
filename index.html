@@ -11,13 +11,28 @@
         <h4>By Russell Pekala</h4>
         <p>
             The <a href="https://q.fas.harvard.edu/faq.htm">Harvard Q Guide</a>, and the supplementary
-            <a href="https://courses.cs50.net/">CS50 tool</a> are the primary non-human resources that
+            <a href="https://courses.cs50.net/">CS50 tool</a>, built on top of the Q's data, are the primary non-human resources that
             Harvard students use to plan their academic trajectory and understand their university's academic offerings.
-            Despite how useful these tools are, they were designed to help students select courses--they were not designed
+            Despite how useful these tools are, they were designed to help students select courses&mdash;they were not designed
             for the task of actually understanding the academic system at Harvard.
+        </p>
 
-            http://www.thecrimson.com/article/1973/4/26/cue-will-survey-44-large-courses/
-            http://www.thecrimson.com/article/2010/5/27/guide-cue-professors-course/
+        <p>
+            To some extent the administration has incentives to keep this data private.  If most of the value of a Harvard
+            education lies in its intangibles, measuring tangible aspects of it will only lower its perceived quality.  The
+            worst thing that could happen is that statistical comparisions could show that most Harvard classes are fundamentally the same as classes
+            at any other university, a truth only really understood by Harvard students themselves.
+        </p>
+        <p>
+            Perhaps this, not a
+            <a href="http://www.thecrimson.com/article/1973/4/26/cue-will-survey-44-large-courses/">desire to improve surveying techniques</a>,
+            is the reason the university took over the administration of course surveying from the Crimson, who
+            started the project in 1925.  At the time the university took over this data, students were assured that that
+            student editors would have complete control over the publication of the Q Guide.  It was revealed much later that
+            actually the administration <a href="http://www.thecrimson.com/article/2010/5/27/guide-cue-professors-course/">
+            secretly instructed</a> students on what they were allowed to print.  Since then, the university has completely
+            reigned control over the Q Guide. When I reached out to the Office of Institutional Research, they told me that
+            it was not their policy to give students raw versions of the data.
         </p>
         <p>
             If we are going to be asked to front a sticker price of $60000 and thousands of hours of time,
@@ -26,14 +41,18 @@
             credential. To the extent to which Harvard seeks to educate, this data is useful in understanding the
             distributions of what students are studying and where Harvard is allocating its resources.
             To the extent that college serves to rank and measure students, this data is valuable in establishing
-            the merits and work ethics of students--especially as grade inflation degrades the signal behind students'
+            the merits and work ethics of students&mdash;especially as grade inflation degrades the signal behind students'
             nominal grades.
+        </p>
+        <p>
+            When Harvard hides information about grade distributions, all that really does is obfiscate merit and benefit
+            students, <a href="https://www.washingtonpost.com/news/posteverything/wp/2017/09/19/how-harvard-helps-its-richest-and-most-arrogant-students-get-ahead/?utm_term=.a26d270a678e">often wealthy ones,</a>
+            who know how to work the system for higher grades.
         </p>
 
         <p>
             It's equally important from a societal perspective to understand the nature of a Harvard education.
-            As an educational
-            nonprofit, Harvard is largely supported by public funds.  Most of these funds come in the form of tax breaks
+            As an educational nonprofit, Harvard is largely supported by public funds.  Most of these funds come in the form of tax breaks
             and research grants, but other sources of funding like Pell Grants and ??? loans directly fund student tuition.  As
             tuition increases (driven largely by top schools like Harvard) start to take a serious toll on , the public is rightfully
             questioning the effectiveness of colleges at facilitating social mobility.
@@ -47,21 +66,27 @@
 
         <p>
             The Harvard Q Guide has been scraped several times in the past, each time driving out certain elements
-            of its vast data.  The most comprehensive recent scraping was done by Roger Zou in 2016, who used a python
-            scraper and did some interesting data science in Microsoft Excel.  Other interesting projects have been done by
-            Patrick Pan, Ryan Kerr, and perhaps others.  Like other stabs at understanding this dataset, the following
-            analysis does not claim to be complete.  There seems to be no limit to the number of interesting patterns in the data, and
+            of its vast data.  The most comprehensive recent scraping was done by <a href="https://github.com/rogergzou/Q-Guide-Scraper">Roger Zou '17</a>
+            in 2016, who used a python
+            scraper and published some interesting Excel visualizations in the student-centered education blog <a href="https://mystudentvoices.com/analyzing-the-harvard-q-guide-1ba02948819">My Student Voices</a>.  Other interesting projects have been done by
+            <a href="https://github.com/patrickhpan/scrape-q-guide">Patrick Pan '19</a>,
+            <a href="https://github.com/ryandkerr/q-guide">Ryan Kerr '17</a>, and perhaps others.
+            Like other stabs at understanding this dataset, the following  analysis does not claim to be complete.
+            There seems to be no limit to the number of interesting patterns in the data, and
             I hope that others will be interested in this project and continue with it where I left off.
         </p>
         <p>
-            The data scraping for this project was done using Web Scraper, a Chrome Extension.  I could not get Zou's
-            code to work directly, probably because of changes in Harvard's 2-Factor authentication system since 2016.
+            The data scraping for this project was done using <a href="http://webscraper.io/">Web Scraper</a>, a Chrome Extension.
+            I could not get Zou's code to work directly, probably because of the introduction of <a href="http://www.thecrimson.com/article/2016/10/6/two-step-verification-huit/">2-Factor Authentication</a>
+            in that came in late 2016.
             A description of how Sara Valente and I scraped this information can be learned about in a medium post
-            we wrote here.
+            we wrote here with our code available on github.  Only students with Harvard Key authentication credentials
+            will be able to scrape the raw data themselves, though I am happy to pass on the cleaned raw data to any Harvard
+            student that emails me with their college address and save you the trouble.
         </p>
         <p>
-            We'll start with the information that everyone wants to see first: ratings scores.  These are generally
-            the first things that
+            We'll start with the information that everyone wants to see first: ratings scores.  These ratings include  are generally
+            the first things that students reference when comparing schedules.
             The best rated courses are We
             notice (showing the top 30 concentrations) that Math, Computer Science, Physics, and Chemistry tended
             to be the most demanding courses going as far back as the data went.
@@ -190,6 +215,8 @@
         </div>
 
         <h2> What are people studying?  </h2>
+
+        Another natural question to ask about academics at Harvard is the simple question of what people are studying.  
         <div class="col-md-12">
             <p class="top-label-chart">
                 Check out how course enrollment is distributed between classes overall and throughout time.  See detail
@@ -240,6 +267,11 @@
 
 
         <h2> What's class like?</h2>
+        Experiences that students have in class vary greatly depending on which department they are in.  One of the biggest 
+        determinants of what your course experience will look like is how many people are in each of your classes.  The oft-cited 
+        median class size is a poor determinant of what classes look like from a students perspective because it assumes that students 
+        have an equal likelihood of being in small classes as they do in being in large classes.  In reality, since there are more students 
+        in larger classes, it is often far more likely that students end 
         <div class="col-md-12">
             <div class="row text-center" style="margin:auto;">
                 <p class="top-label-chart"> This is the 2011-2017 aggregated enrollment histogram for
@@ -301,9 +333,8 @@
             United States in the World, Societies of the World, ) had by far the largest class sizes, followed by STEM classes.
             The overwhelming values of
 
-            Despite Harvard's supposed attention paid to its
-            general education program, the median course sizes are orders of magnitude bigger than median class sizes
-            in other departments.
+            Despite Harvard's supposed attention paid to its General Education program, it's a shame that these classes are often 
+            administered in depersonalized ways.  
         </p>
 
 
@@ -311,9 +342,12 @@
         <h2> Who likes to work the most?  </h2>
         <p>
             A strong pattern emerges when we look at workload versus course rating: In STEM fields, workload correlates
-            negatively with course rating.  The best STEM classes are those that require the least work.  At the other end
+            negatively with course rating.  The highest-rated STEM classes are those that require the least work.  At the other end
             of the spectrum, general education classes are actually rated higher when they have higher workloads.  Other
             areas were rated somewhat in the middle: workload wasn't as great a predictor of overall course rating.
+        </p>
+        <p>
+            This is 
         </p>
         <div class="col-md-12">
             <div class="row text-center" style="margin:auto;">
