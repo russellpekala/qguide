@@ -41,12 +41,13 @@
             credential. To the extent to which Harvard seeks to educate, this data is useful in understanding the
             distributions of what students are studying and where Harvard is allocating its resources.
             To the extent that college serves to rank and measure students, this data is valuable in establishing
-            the merits and work ethics of students&mdash;especially as grade inflation degrades the signal behind students'
-            nominal grades.
+            the merits and work ethics of students&mdash;especially as
+            <a href="https://www.theatlantic.com/magazine/archive/2005/03/the-truth-about-harvard/303726/">grade inflation</a>
+            degrades the signal behind students' nominal grades.
         </p>
         <p>
             When Harvard hides information about grade distributions, all that really does is obfiscate merit and benefit
-            students, <a href="https://www.washingtonpost.com/news/posteverything/wp/2017/09/19/how-harvard-helps-its-richest-and-most-arrogant-students-get-ahead/?utm_term=.a26d270a678e">often wealthy ones,</a>
+            <a href="https://www.washingtonpost.com/news/posteverything/wp/2017/09/19/how-harvard-helps-its-richest-and-most-arrogant-students-get-ahead/?utm_term=.a26d270a678e">(often wealthy) students</a>
             who know how to work the system for higher grades.
         </p>
 
@@ -57,8 +58,9 @@
             tuition increases (driven largely by top schools like Harvard) start to take a serious toll on , the public is rightfully
             questioning the effectiveness of colleges at facilitating social mobility.
             Additionally, with Harvard facing the dual allegations of
-            (1) discrimination in its admissions process and (2) not doing enough to support low-income students,
-            it is absurd that there appears to be negligible effort
+            (1) <a href="https://www.nytimes.com/2017/12/01/us/harvard-justice-department-discrimination.html">discrimination</a>
+            in its admissions process and (2) <a href="https://harvardmagazine.com/2017/08/the-first-generation-gap">not doing enough</a>
+            to support low-income students, it is absurd that there appears to be negligible effort
             to statistically evaluate hypotheses about how aspiring students will do once at Harvard.  Unfortunately,
             the information within the Q Guide isn't enough to answer any of these questions since there is no demographic
             information associated with student response data.
@@ -77,12 +79,13 @@
         </p>
         <p>
             The data scraping for this project was done using <a href="http://webscraper.io/">Web Scraper</a>, a Chrome Extension.
-            I could not get Zou's code to work directly, probably because of the introduction of <a href="http://www.thecrimson.com/article/2016/10/6/two-step-verification-huit/">2-Factor Authentication</a>
-            in that came in late 2016.
-            A description of how Sara Valente and I scraped this information can be learned about in a medium post
-            we wrote here with our code available on github.  Only students with Harvard Key authentication credentials
-            will be able to scrape the raw data themselves, though I am happy to pass on the cleaned raw data to any Harvard
-            student that emails me with their college address and save you the trouble.
+            I could not get Zou's code to work directly, probably because of the introduction of <a href="http://www.thecrimson.com/article/2016/10/6/two-step-verification-huit/">Two-Factor Authentication</a>
+            in that came to the Q in late 2016.
+            A description of how <a href="https://github.com/saravalente">Sara Valente</a> and I scraped this information
+            can be learned about in a medium post
+            with code available on <a href="https://github.com/russellpekala/qguide">github</a>.
+            Only students with Harvard Key authentication credentials will be able to scrape the raw data themselves,
+            though I am happy to pass on the cleaned raw data to any Harvard student that <a href="mailto:russell.pekala@gmail.com?subject=Help%20I%20am%20Lazy%20but%20I%20Want%20Data%20Please">emails me</a> with their college address.
         </p>
         <p>
             We'll start with the information that everyone wants to see first: ratings scores.  These ratings include  are generally
@@ -136,17 +139,23 @@
             my field of Mathematics, for example, had a standard deviation of over seven hours per week of work.
         </p>
         <p>
-            It's a natural question then whether this variance stems from in-class variance or high between-class variance.
+            It's a natural question then whether this variance stems from in-class variance or between-class variance (pun intended).
             High in-class variance would be a symptom of the same course costing its students vastly different quantities
             of time, perhaps depending on ability.  High between-class variance would be a symptom of a department that
             has courses of vastly different difficulties under the same departmental umbrella.  An intro-stats understanding
-            of variance decomposition shows that these two sources of variance combined describe the entire variance.
+            of <a href="https://en.wikipedia.org/wiki/Law_of_total_variance">variance decomposition</a> shows that these two
+            sources of variance combined describe the entire variance.
         </p>
         <p>
             The data clearly show that workload variance in STEM fields comes overwhelmingly from between-class
-            variance.  This might be explained by the tendency for STEM classes tend to be sequential and ability-segregated in a way that
+            variance.  This might be explained by the tendency for STEM classes to be sequential and ability-segregated in a way that
             courses in other departments are not.  This variance decomposition might also be a reflection of the
-            recent creation of easier courses and pathways within STEM fields that didn't exist before.  JUSTIFICATION NEEDED.
+            recent creation of easier courses and pathways within STEM fields that didn't exist before.  In 2017, Flyby reviewed
+            the <a href="https://www.noodlepros.com/blog/2017/05/01/the-easiest-courses-at-harvard/">10 easiest classes</a>
+            at Harvard, which included classes like "Engineering Sciences 139: Innovation in Science
+            and Engineering", "Neurobiology 95hfj: The Sleeping Brain", and "Organismic and Evolutionary Biology 59:
+            Plants and Human Affairs".  From personal experience, the easiest class I have taken at Harvard was a Graduate
+            Math class about modeling cancer.
         </p>
         <div class="col-dm-12">
             <p class="top-level-chart">
@@ -351,64 +360,75 @@
         </p>
         <div class="col-md-12">
             <div class="row text-center" style="margin:auto;">
-                <p class="top-label-chart"> The scatter shows course data from
-                    <select onchange="workScatter.updateDept();workLineupF.wrangleData();" class="selectpicker" id="department-select">
-                        <option value="AESTHINT">Aesth. & Int.</option>
-                        <option value="AFRAMER">Af. Am. Studies</option>
-                        <option value="ANTHRO">Anthropology</option>
-                        <option value="APMTH">Ap. Math</option>
-                        <option value="CHEM">Chemistry</option>
-                        <option value="COMPSCI">Comp. Sci.</option>
-                        <option value="CULTBLF">Cult. & Belief</option>
-                        <option value="ECON">Economics</option>
-                        <option value="ENG-SCI">Eng. Sci.</option>
-                        <option value="ENGLISH">English</option>
-                        <option value="ETHRSON">Eth. Reasoning</option>
-                        <option value="EXPOS">Expos. Writing</option>
-                        <option value="FRSEMR">Freshman Seminar</option>
-                        <option value="GOV">Government</option>
-                        <option value="HIST">History</option>
-                        <option value="HISTSCI">Hist. of Sci.</option>
-                        <option value="LIFESCI">Life Science</option>
-                        <option value="MATH">Mathematics</option>
-                        <option value="MCB">MCB</option>
-                        <option value="MUSIC">Music</option>
-                        <option value="PHYSCI">Phys. Sci.</option>
-                        <option value="PHYSICS">Physics</option>
-                        <option value="PSY">Psychology</option>
-                        <option value="SCILIVSY">Sci. Living Systems</option>
-                        <option value="SCIPHUNV">Sci. Physical Univ.</option>
-                        <option value="SOCIOL">Sociology</option>
-                        <option value="SOCWORLD">Soc's of the World</option>
-                        <option value="SPANSH">Spanish</option>
-                        <option value="STAT">Statistics</option>
-                        <option value="US-WORLD">US in the World</option>
-                    </select> classes in
-                    <select onchange="workScatter.wrangleData()" class="selectpicker" id="update-term">
-                        <option value="2017_spring">Spring 2017</option>
-                        <option value="2016_fall">Fall 2016</option>
-                        <option value="2016_spring">Spring 2016</option>
-                        <option value="2015_fall">Fall 2015</option>
-                        <option value="2015_spring">Spring 2015</option>
-                        <option value="2014_fall">Fall 2014</option>
-                        <option value="2014_spring">Spring 2014</option>
-                        <option value="2013_fall">Fall 2013</option>
-                        <option value="2013_spring">Spring 2013</option>
-                        <option value="2012_fall">Fall 2012</option>
-                        <option value="2012_spring">Spring 2012</option>
-                        <option value="2011_fall">Fall 2011</option>
-                    </select>.
-                </p>
+                <div class="tocenter">
+                    <p class="top-label-chart"> The scatter shows course data from
+                        <select onchange="workScatter.updateDept();workLineupF.wrangleData();" class="selectpicker" id="department-select">
+                            <option value="AESTHINT">Aesth. & Int.</option>
+                            <option value="AFRAMER">Af. Am. Studies</option>
+                            <option value="ANTHRO">Anthropology</option>
+                            <option value="APMTH">Ap. Math</option>
+                            <option value="CHEM">Chemistry</option>
+                            <option value="COMPSCI">Comp. Sci.</option>
+                            <option value="CULTBLF">Cult. & Belief</option>
+                            <option value="ECON">Economics</option>
+                            <option value="ENG-SCI">Eng. Sci.</option>
+                            <option value="ENGLISH">English</option>
+                            <option value="ETHRSON">Eth. Reasoning</option>
+                            <option value="EXPOS">Expos. Writing</option>
+                            <option value="FRSEMR">Freshman Seminar</option>
+                            <option value="GOV">Government</option>
+                            <option value="HIST">History</option>
+                            <option value="HISTSCI">Hist. of Sci.</option>
+                            <option value="LIFESCI">Life Science</option>
+                            <option value="MATH">Mathematics</option>
+                            <option value="MCB">MCB</option>
+                            <option value="MUSIC">Music</option>
+                            <option value="PHYSCI">Phys. Sci.</option>
+                            <option value="PHYSICS">Physics</option>
+                            <option value="PSY">Psychology</option>
+                            <option value="SCILIVSY">Sci. Living Systems</option>
+                            <option value="SCIPHUNV">Sci. Physical Univ.</option>
+                            <option value="SOCIOL">Sociology</option>
+                            <option value="SOCWORLD">Soc's of the World</option>
+                            <option value="SPANSH">Spanish</option>
+                            <option value="STAT">Statistics</option>
+                            <option value="US-WORLD">US in the World</option>
+                        </select> classes in
+                        <select onchange="workScatter.wrangleData()" class="selectpicker" id="update-term">
+                            <option value="2017_spring">Spring 2017</option>
+                            <option value="2016_fall">Fall 2016</option>
+                            <option value="2016_spring">Spring 2016</option>
+                            <option value="2015_fall">Fall 2015</option>
+                            <option value="2015_spring">Spring 2015</option>
+                            <option value="2014_fall">Fall 2014</option>
+                            <option value="2014_spring">Spring 2014</option>
+                            <option value="2013_fall">Fall 2013</option>
+                            <option value="2013_spring">Spring 2013</option>
+                            <option value="2012_fall">Fall 2012</option>
+                            <option value="2012_spring">Spring 2012</option>
+                            <option value="2011_fall">Fall 2011</option>
+                        </select>.
+                    </p>
+                </div>
+                <div class="row side-by-side">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div id="work-scatter"></div>
+                            <div id="work-lineupf"></div>
+                            <div id="work-lineupc"></div>
+                        </div>
+                        <div class="row">
+                            <div class="row">
+                                <p style="font-size: 10px;"><sup>*</sup> The scatter dots representing courses are sized by enrollment.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-            <div class="row side-by-side">
-                <div id="work-scatter"></div>
-                <div id="work-lineupf"></div>
-                <div id="work-lineupc"></div>
-            </div>
-            <div class="row text-center" style="margin:auto;">
-                <p style="font-size: 10px;"><sup>*</sup> The scatter dots representing courses are sized by enrollment.
-                </p>
-            </div>
+
+
         </div>
 
 
@@ -469,6 +489,7 @@
             <div class="row text-center" style="margin:auto;">
                 <p style="font-size: 10px;"><sup>*</sup> A list of the boring words, along with everything else used in the project, is on my github.
                 </p>
+                <p style="font-size: 10px;"><sup>*</sup> A list of the boring words, along with everything else used in the project, is on my github.</p>
             </div>
         </div>
 
